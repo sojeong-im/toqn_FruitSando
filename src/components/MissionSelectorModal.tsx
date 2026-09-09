@@ -28,35 +28,58 @@ export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
 
   const activeContributorName = customName.trim() || contributor || '구역원';
 
+  // Category badge colors for visual distinction
+  const getCategoryBadgeClass = (category: MissionCategory) => {
+    switch (category) {
+      case '노방':
+        return 'bg-rose-100 text-rose-800 border-rose-200';
+      case '지인':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case '팀/소모임':
+        return 'bg-amber-100 text-amber-800 border-amber-200';
+      case '개척':
+        return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+      case '찾기':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case '특별':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-stone-100 text-stone-700 border-stone-200';
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-white rounded-3xl p-5 sm:p-6 max-w-lg w-full max-h-[88vh] flex flex-col shadow-2xl border border-stone-200 relative animate-popIn">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-stone-100">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5">
+      <div className="bg-white rounded-3xl p-5 sm:p-7 max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border-2 border-amber-300 relative animate-popIn">
+        {/* Modal Header */}
+        <div className="flex items-start justify-between pb-3.5 border-b border-stone-200">
           <div>
-            <span className="text-xs font-bold text-amber-800">
-              {district.name} 미션 인증
-            </span>
-            <h3 className="text-lg sm:text-xl font-black text-stone-900 mt-0.5">
-              공식 미션 점수표
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">
+                {district.name} 미션 인증
+              </span>
+              <span className="text-xs text-stone-500 font-medium">100P 달성 시 산도 1개 완성</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-stone-900 mt-1">
+              공식 미션 항목 및 점수표
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-600 transition-colors"
+            className="p-2 rounded-full hover:bg-stone-100 text-stone-400 hover:text-stone-700 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-6 h-6" />
           </button>
         </div>
 
-        {/* Member Selector (간결하게) */}
-        <div className="my-3 p-3 rounded-2xl bg-stone-50 border border-stone-200">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-stone-700 mb-2">
-            <User className="w-3.5 h-3.5 text-stone-500" />
-            <span>수행자 선택 (새신자/구역원):</span>
+        {/* Member Selector */}
+        <div className="my-3.5 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-stone-800 mb-2">
+            <User className="w-4 h-4 text-amber-600" />
+            <span>미션 수행자 선택 (새신자/구역원):</span>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 mb-2">
+          <div className="flex flex-wrap gap-2 mb-2">
             {district.members.map((m) => (
               <button
                 key={m.name}
@@ -65,10 +88,10 @@ export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
                   setContributor(m.name);
                   setCustomName('');
                 }}
-                className={`px-2.5 py-1 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   contributor === m.name && !customName
-                    ? 'bg-amber-500 text-white shadow-sm font-bold'
-                    : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
+                    ? 'bg-stone-900 text-white shadow-sm scale-105'
+                    : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'
                 }`}
               >
                 {m.name}
@@ -78,81 +101,101 @@ export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
 
           <input
             type="text"
-            placeholder="직접 입력 (예: 새신자 민우)"
+            placeholder="목록에 없는 경우 직접 이름 입력 (예: 새신자 민우)"
             value={customName}
             onChange={(e) => setCustomName(e.target.value)}
-            className="w-full text-xs px-3 py-2 rounded-xl bg-white border border-stone-200 focus:outline-none focus:border-amber-400"
+            className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl bg-white border border-stone-300 focus:outline-none focus:border-amber-500 font-medium"
           />
         </div>
 
         {/* Category Tabs */}
-        <div className="flex gap-1 overflow-x-auto pb-2 mb-2 scrollbar-none">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                selectedCategory === cat
-                  ? 'bg-stone-900 text-white'
-                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="flex gap-1.5 overflow-x-auto pb-2.5 mb-2 scrollbar-none">
+          {categories.map((cat) => {
+            const count = cat === '전체' 
+              ? OFFICIAL_MISSIONS.length 
+              : OFFICIAL_MISSIONS.filter((m) => m.category === cat).length;
+
+            return (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                  selectedCategory === cat
+                    ? 'bg-amber-500 text-white shadow-sm'
+                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                }`}
+              >
+                <span>{cat}</span>
+                <span className={`text-[11px] px-1.5 py-0.2 rounded-full ${
+                  selectedCategory === cat ? 'bg-white/30 text-white' : 'bg-stone-200 text-stone-500'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
         </div>
 
-        {/* Missions List */}
-        <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+        {/* Spacious, Highly Readable Missions List */}
+        <div className="flex-1 overflow-y-auto space-y-3.5 pr-1 py-1">
           {filteredMissions.map((m) => (
             <div
               key={m.id}
-              className="p-3 rounded-2xl bg-white hover:bg-amber-50/40 border border-stone-200 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-sm"
+              className="p-4 sm:p-5 rounded-2xl bg-white hover:bg-amber-50/30 border-2 border-stone-200 hover:border-amber-400 transition-all shadow-sm flex flex-col gap-3"
             >
+              {/* Card Header: Category Badge + Big Point Badge */}
+              <div className="flex items-center justify-between gap-2">
+                <span className={`text-xs font-black px-2.5 py-1 rounded-lg border ${getCategoryBadgeClass(m.category)}`}>
+                  {m.category} 미션
+                </span>
+
+                <span className="text-base sm:text-lg font-black text-amber-950 bg-gradient-to-r from-amber-200 to-amber-300 px-3.5 py-1 rounded-xl shadow-inner border border-amber-400">
+                  +{m.points} POINT
+                </span>
+              </div>
+
+              {/* Mission Content: Large bold title and readable description spanning lines freely */}
               <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-stone-100 text-stone-600">
-                    {m.category}
-                  </span>
-                  <h4 className="text-xs sm:text-sm font-bold text-stone-900">{m.title}</h4>
-                </div>
+                <h4 className="text-base sm:text-lg font-black text-stone-900 leading-snug break-keep">
+                  {m.title}
+                </h4>
                 {m.description && (
-                  <p className="text-[11px] text-stone-400 mt-0.5">{m.description}</p>
+                  <p className="text-xs sm:text-sm text-stone-600 font-medium mt-1.5 leading-relaxed break-keep">
+                    {m.description}
+                  </p>
                 )}
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-2 shrink-0">
-                <span className="text-xs sm:text-sm font-black text-amber-900 bg-amber-100 px-2 py-1 rounded-lg">
-                  +{m.points}P
-                </span>
-
+              {/* Action Buttons: Spacious and clearly separated */}
+              <div className="pt-2 border-t border-stone-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2">
+                {/* 1. Scratch Lottery */}
                 <button
                   onClick={() => onSelectForScratch(m, activeContributorName)}
-                  className="px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-sm flex items-center gap-1"
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 active:scale-95 text-stone-950 text-xs sm:text-sm font-extrabold shadow-sm flex items-center justify-center gap-1.5 transition-all"
                 >
-                  <Gift className="w-3.5 h-3.5" />
-                  <span>복권 긁기</span>
+                  <Gift className="w-4 h-4" />
+                  <span>즉석 복권 긁기로 인증</span>
                 </button>
 
+                {/* 2. Direct Apply */}
                 <button
                   onClick={() => onQuickApply(m, activeContributorName)}
-                  className="px-2.5 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-900 text-white text-xs font-bold flex items-center gap-1"
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-black active:scale-95 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all"
                 >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>바로 적립</span>
+                  <Check className="w-4 h-4 text-amber-400" />
+                  <span>바로 {m.points}P 적립</span>
                 </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Footer info */}
-        <div className="mt-3 pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
-          <span>100POINT마다 열매산도 1개가 완성됩니다.</span>
+        {/* Modal Footer */}
+        <div className="mt-3.5 pt-3 border-t border-stone-200 flex items-center justify-between text-xs sm:text-sm text-stone-500">
+          <span>과일 100개가 모일 때마다 수제 과일산도가 1개씩 완성됩니다.</span>
           <button
             onClick={onClose}
-            className="text-stone-600 font-bold hover:underline"
+            className="px-4 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold transition-colors"
           >
             닫기
           </button>
