@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { District } from '../types';
-import { Calendar, Clock, Trophy, Info, X, Check } from 'lucide-react';
+import { Calendar, Clock, Trophy, Info, X, Check, Sparkles } from 'lucide-react';
+import { InteractivePoster } from './InteractivePoster';
 
 interface EventHeaderProps {
   districts: District[];
@@ -29,20 +30,16 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   const currentTeamDistricts = districts.filter((d) => d.team === selectedTeamTab);
 
   return (
-    <header className="mb-6">
-      {/* Poster-centered Hero Banner */}
-      <div className="rounded-3xl bg-white p-5 sm:p-6 shadow-md border border-amber-200/80 flex flex-col md:flex-row items-center gap-6">
-        {/* Actual Poster Image */}
-        <div className="w-full md:w-52 max-w-[220px] shrink-0 rounded-2xl overflow-hidden shadow-lg border-2 border-amber-300">
-          <img
-            src="/poster.jpg"
-            alt="새신자부 열매산도 쟁탈전 공식 포스터"
-            className="w-full h-auto object-cover"
-          />
+    <header className="mb-6 space-y-4">
+      {/* Interactive Animated Poster Hero Card */}
+      <div className="rounded-3xl bg-white p-5 sm:p-7 shadow-md border border-amber-200/80 flex flex-col lg:flex-row items-center gap-7">
+        {/* Interactive Poster Component where characters move when tapped */}
+        <div className="w-full lg:w-72 max-w-[320px] shrink-0">
+          <InteractivePoster onOpenNotice={() => setShowNoticeModal(true)} />
         </div>
 
         {/* Event Information & Context */}
-        <div className="flex-1 text-center md:text-left space-y-3">
+        <div className="flex-1 text-center lg:text-left space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-stone-700 text-xs font-semibold">
             <span className="flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5 text-amber-600" />
@@ -64,41 +61,49 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
             </p>
           </div>
 
-          <p className="text-xs sm:text-sm text-stone-500 max-w-xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-stone-600 max-w-xl leading-relaxed">
             총 30개 구역(1-1 ~ 6-5) 참여! 미션 성공으로 <strong className="text-amber-900 font-bold">100POINT</strong>가 모일 때마다 
-            포스터 속 수제 과일산도 1개가 완성됩니다.
+            포스터 속 6가지 수제 과일산도 중 1개가 완성됩니다.
           </p>
 
-          <div className="pt-1 flex flex-wrap items-center justify-center md:justify-start gap-2">
+          <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-2">
             <button
               onClick={() => setShowNoticeModal(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-bold transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs sm:text-sm font-bold transition-colors"
             >
-              <Info className="w-3.5 h-3.5 text-amber-700" />
+              <Info className="w-4 h-4 text-amber-700" />
               <span>공식 요강 & 상품 안내</span>
             </button>
-            <span className="text-xs text-stone-400 font-medium px-2.5 py-1 bg-stone-100 rounded-lg">
+            <span className="text-xs text-stone-500 font-medium px-3 py-2 bg-stone-100 rounded-xl">
               발신: 새신자부 찾기팀
             </span>
+          </div>
+
+          <div className="pt-1 text-xs text-amber-700 font-semibold flex items-center justify-center lg:justify-start gap-1">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>포스터 속 돋보기 탐정들과 과일산도를 직접 터치해보세요!</span>
           </div>
         </div>
       </div>
 
       {/* 30 Districts Smart Selector */}
-      <div className="mt-4 bg-white p-4 rounded-3xl border border-amber-200 shadow-sm space-y-3">
+      <div className="bg-white p-4 sm:p-5 rounded-3xl border border-amber-200 shadow-sm space-y-3">
         {/* Active District Status Ribbon */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-stone-500">현재 선택된 구역:</span>
-            <span className="px-3 py-1 rounded-xl bg-amber-500 text-white font-black text-sm shadow-sm flex items-center gap-1.5">
-              <Check className="w-3.5 h-3.5" />
+            <span className="text-xs font-bold text-stone-500">현재 보고 있는 구역:</span>
+            <span className="px-3.5 py-1.5 rounded-xl bg-amber-500 text-white font-black text-sm shadow-sm flex items-center gap-1.5">
+              <Check className="w-4 h-4" />
               {activeDistrict.name}
+            </span>
+            <span className="text-xs text-stone-500 font-semibold">
+              (완성 산도 {activeDistrict.completedSandos.length}개 / {activeDistrict.currentPoints}P)
             </span>
           </div>
 
           {/* Quick jump select dropdown for all 30 groups */}
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-stone-400">빠른 이동:</span>
+            <span className="text-xs text-stone-400">빠른 구역 이동:</span>
             <select
               value={activeDistrictId}
               onChange={(e) => {
@@ -107,7 +112,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
                 const team = parseInt(newId.split('-')[0], 10);
                 if (team) setSelectedTeamTab(team);
               }}
-              className="bg-stone-50 border border-stone-200 text-xs font-bold text-stone-800 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-amber-400"
+              className="bg-stone-50 border border-stone-200 text-xs font-bold text-stone-800 rounded-xl px-3 py-2 focus:outline-none focus:border-amber-400"
             >
               {districts.map((d) => (
                 <option key={d.id} value={d.id}>
@@ -127,7 +132,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
               <button
                 key={teamNum}
                 onClick={() => setSelectedTeamTab(teamNum)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all shrink-0 ${
                   isCurrentTeam
                     ? 'bg-stone-900 text-white shadow-sm'
                     : 'bg-stone-100 hover:bg-stone-200 text-stone-600'
@@ -140,26 +145,26 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
         </div>
 
         {/* 2. Sub-districts for selected team (e.g. 1-1, 1-2, 1-3, 1-4, 1-5) */}
-        <div className="grid grid-cols-5 gap-1.5 sm:gap-2 pt-1">
+        <div className="grid grid-cols-5 gap-2 pt-1">
           {currentTeamDistricts.map((d) => {
             const isSelected = activeDistrictId === d.id;
             return (
               <button
                 key={d.id}
                 onClick={() => onSelectDistrict(d.id)}
-                className={`py-2 px-1 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 ${
+                className={`py-2.5 px-1 rounded-2xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 ${
                   isSelected
-                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
-                    : 'bg-amber-50/70 hover:bg-amber-100 text-stone-800 border border-amber-200/60'
+                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20 scale-105'
+                    : 'bg-amber-50/70 hover:bg-amber-100 text-stone-800 border border-amber-200/70'
                 }`}
               >
-                <span className="text-xs font-extrabold">{d.name.replace('구역', '')}</span>
+                <span className="text-xs sm:text-sm font-extrabold">{d.name.replace('구역', '')}</span>
                 <span
-                  className={`text-[10px] font-semibold ${
+                  className={`text-[10px] sm:text-[11px] font-semibold ${
                     isSelected ? 'text-amber-100' : 'text-amber-800'
                   }`}
                 >
-                  산도 {d.completedSandos.length}
+                  산도 {d.completedSandos.length}개
                 </span>
               </button>
             );
