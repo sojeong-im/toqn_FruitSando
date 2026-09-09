@@ -3,7 +3,13 @@ import confetti from 'canvas-confetti';
 import { District, SandoRecipe } from '../types';
 import { getRandomRecipe } from '../utils/sandoRecipes';
 import { sounds } from '../utils/soundEffects';
-import { PlusCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { PlusCircle, CheckCircle2 } from 'lucide-react';
+import {
+  BreadSliceBase,
+  BreadSliceTop,
+  FluffyCreamLayer,
+  IllustratedFruit,
+} from './BreadIllustrations';
 
 interface SandoKitchenProps {
   district: District;
@@ -86,7 +92,7 @@ export const SandoKitchen: React.FC<SandoKitchenProps> = ({
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-stone-900 mt-1">
-            {district.completedSandos.length + 1}번째 열매산도 만드는 중
+            {district.completedSandos.length + 1}번째 열매산도 조립 중
           </h2>
         </div>
 
@@ -121,86 +127,105 @@ export const SandoKitchen: React.FC<SandoKitchenProps> = ({
         </div>
 
         <div className="flex justify-between text-[11px] text-stone-500 mt-2 px-0.5 font-medium">
-          <span>0P (시작)</span>
+          <span>0P (우유식빵)</span>
           <span>50P (생크림)</span>
-          <span>75P (과일 얹기)</span>
-          <span>100P (산도 컷팅)</span>
+          <span>75P (과일얹기)</span>
+          <span>100P (대각선 컷팅)</span>
         </div>
       </div>
 
-      {/* Interactive Assembly & Cutting Stage */}
-      <div className="relative min-h-[260px] flex items-center justify-center bg-stone-50 rounded-2xl border border-stone-200 p-6 overflow-hidden">
-        {/* Regular Assembly Stage */}
+      {/* Illustrated Artisanal Sando Assembly & Cutting Stage */}
+      <div className="relative min-h-[290px] flex items-center justify-center bg-[#FBF7F0] rounded-2xl border-2 border-amber-200/60 p-6 overflow-hidden">
+        {/* Regular Assembly Stage with Illustrated Bread */}
         {sliceStep === 'idle' && (
           <div className="flex flex-col items-center justify-center text-center">
-            {/* Visual Sandwich Layers */}
-            <div className="relative w-56 h-36 flex flex-col items-center justify-center">
-              {/* Bottom Bread */}
-              <div className="w-48 h-10 bg-[#F0D5B5] rounded-xl border-2 border-[#D9AF7E] shadow-sm flex items-center justify-center">
-                <span className="text-[11px] text-stone-600 font-bold">식빵 베이스</span>
-              </div>
-
-              {/* Cream Layer if points >= 20 */}
-              {currentPoints >= 20 && (
-                <div
-                  className="w-44 bg-white rounded-lg border border-stone-200 shadow-inner flex items-center justify-center transition-all duration-500 my-1"
-                  style={{ height: `${Math.min(40, 16 + (currentPoints / 100) * 24)}px` }}
-                >
-                  <span className="text-[10px] text-stone-400 font-semibold">
-                    부드러운 우유 생크림
-                  </span>
-                </div>
-              )}
-
-              {/* Fresh Fruits if points >= 50 */}
+            {/* 3D Stack of Illustrated Layers */}
+            <div className="relative w-64 min-h-[170px] flex flex-col items-center justify-end pb-2">
+              {/* Fresh Fruits Layer (Appears when points >= 50) */}
               {currentPoints >= 50 && (
-                <div className="flex items-center justify-center gap-3 animate-popIn my-1">
-                  <span className="px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 text-xs font-bold">
-                    딸기
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-xs font-bold">
-                    샤인머스캣
-                  </span>
-                  {currentPoints >= 75 && (
-                    <span className="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-xs font-bold">
-                      망고
-                    </span>
-                  )}
+                <div className="flex items-center justify-center gap-3 z-20 mb-[-6px] animate-popIn">
+                  <IllustratedFruit type="strawberry" />
+                  {currentPoints >= 65 && <IllustratedFruit type="shine" />}
+                  {currentPoints >= 80 && <IllustratedFruit type="mango" />}
+                  {currentPoints >= 90 && <IllustratedFruit type="orange" />}
                 </div>
               )}
+
+              {/* Fluffy Whipped Cream Layer (Appears when points >= 20) */}
+              {currentPoints >= 20 && (
+                <FluffyCreamLayer progress={currentPoints} />
+              )}
+
+              {/* Authentic Illustrated Milk Bread Bottom Slice */}
+              <div className="z-0 filter drop-shadow-md">
+                <BreadSliceBase />
+              </div>
 
               {/* Empty state instruction */}
               {currentPoints < 20 && (
-                <p className="text-xs text-stone-400 mt-3 font-medium">
-                  미션을 완수하여 점수를 쌓으면 산도가 완성됩니다.
-                </p>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-white/40 backdrop-blur-[1px] rounded-xl">
+                  <p className="text-xs font-bold text-amber-900">
+                    촉촉한 우유 식빵 베이스 준비 완료!
+                  </p>
+                  <p className="text-[11px] text-stone-500 mt-1">
+                    미션을 완수하여 점수를 올리면 생크림과 과일이 채워집니다.
+                  </p>
+                </div>
               )}
+            </div>
+
+            <div className="mt-3">
+              <span className="text-xs text-amber-800 font-bold bg-amber-100/80 px-3 py-1 rounded-full border border-amber-200">
+                {currentPoints < 50
+                  ? '🍞 폭신폭신한 수제 식빵 위에 크림을 올리는 중'
+                  : '🍓 알록달록 신선한 생과일이 조립되는 중!'}
+              </span>
             </div>
           </div>
         )}
 
-        {/* Covering Top Bread */}
+        {/* Covering Top Illustrated Bread */}
         {sliceStep === 'covering' && (
           <div className="flex flex-col items-center justify-center animate-popIn text-center">
-            <div className="w-48 h-28 bg-[#F0D5B5] rounded-2xl border-2 border-[#D9AF7E] shadow-lg flex flex-col items-center justify-center">
-              <div className="text-xs font-bold text-stone-700">식빵 뚜껑 덮임</div>
-              <div className="w-40 h-8 bg-white my-1 rounded border border-stone-200 flex items-center justify-center text-xs font-semibold text-stone-500">
-                100P 달성 완료
+            <div className="relative w-64 flex flex-col items-center justify-center">
+              {/* Top Loaf Slice descending */}
+              <div className="animate-bounce mb-[-12px] z-20 filter drop-shadow-lg">
+                <BreadSliceTop />
+              </div>
+
+              {/* Cream & Fruits inside */}
+              <div className="w-48 h-10 bg-white rounded-lg border border-stone-200 flex items-center justify-center gap-3 z-10">
+                <IllustratedFruit type="strawberry" />
+                <IllustratedFruit type="mango" />
+                <IllustratedFruit type="shine" />
+              </div>
+
+              {/* Bottom Bread Slice */}
+              <div className="mt-[-8px] z-0 filter drop-shadow-md">
+                <BreadSliceBase />
               </div>
             </div>
-            <p className="text-xs font-bold text-amber-700 mt-3 animate-pulse">
-              100POINT 달성! 대각선 컷팅 준비 중...
+
+            <p className="text-xs font-black text-amber-900 mt-4 animate-pulse">
+              식빵 뚜껑 착! 덮임! 100P 대각선 컷팅 준비 중...
             </p>
           </div>
         )}
 
         {/* Slicing Knife Animation */}
         {sliceStep === 'slashing' && (
-          <div className="relative w-48 h-28 flex items-center justify-center">
-            <div className="w-48 h-28 bg-[#F0D5B5] rounded-2xl border-2 border-[#D9AF7E] shadow-lg flex items-center justify-center">
-              <span className="text-xs font-bold text-stone-600">컷팅 중</span>
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-56 h-1 bg-white shadow-[0_0_12px_#fff] rotate-[-45deg] animate-slash"></div>
+          <div className="relative w-64 h-40 flex items-center justify-center">
+            <div className="relative w-56 flex flex-col items-center justify-center">
+              <BreadSliceTop className="mb-[-12px] z-20" />
+              <div className="w-48 h-10 bg-white rounded border border-stone-200 z-10 flex items-center justify-center gap-2">
+                <IllustratedFruit type="strawberry" />
+                <IllustratedFruit type="mango" />
+              </div>
+              <BreadSliceBase className="mt-[-8px] z-0" />
+
+              {/* Diagonal Slashing Laser / Blade */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">
+                <div className="w-72 h-1.5 bg-white shadow-[0_0_16px_#fff,0_0_24px_#ffaa00] rotate-[-45deg] animate-slash"></div>
               </div>
             </div>
           </div>
@@ -209,24 +234,32 @@ export const SandoKitchen: React.FC<SandoKitchenProps> = ({
         {/* Slices Split open & Celebration */}
         {(sliceStep === 'split' || sliceStep === 'celebrating') && currentRecipe && (
           <div className="flex flex-col items-center justify-center w-full animate-popIn text-center">
-            {/* Split Sando Halves */}
-            <div className="flex items-center justify-center gap-3 my-2">
-              <div className="animate-splitLeft w-24 h-36 bg-white rounded-l-xl border-l-4 border-y-4 border-[#EAD2B2] shadow-md p-2 flex flex-col justify-between">
-                <span className="text-[11px] font-bold text-amber-800">{currentRecipe.name}</span>
-                <div className="text-xs font-semibold text-stone-600">{currentRecipe.fruits[0]?.name}</div>
-                <div className="w-full h-1.5 bg-[#D9AF7E] rounded-full"></div>
+            {/* Split Sando Halves with Illustrated Crust and Cream */}
+            <div className="flex items-center justify-center gap-4 my-2">
+              {/* Left Triangle Half */}
+              <div className="animate-splitLeft w-28 h-40 bg-white rounded-l-2xl border-l-8 border-y-4 border-[#C97A28] shadow-xl p-2.5 flex flex-col justify-between relative overflow-hidden">
+                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
+                <div className="flex flex-col items-center justify-center gap-1.5 my-auto">
+                  <IllustratedFruit type="strawberry" />
+                  <span className="text-xs font-black text-stone-800">{currentRecipe.fruits[0]?.name}</span>
+                </div>
+                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
               </div>
 
-              <div className="animate-splitRight w-24 h-36 bg-white rounded-r-xl border-r-4 border-y-4 border-[#EAD2B2] shadow-md p-2 flex flex-col justify-between">
-                <span className="text-[11px] font-bold text-stone-400 text-right">단면</span>
-                <div className="text-xs font-semibold text-stone-600">{currentRecipe.fruits[1]?.name || '생크림'}</div>
-                <div className="w-full h-1.5 bg-[#D9AF7E] rounded-full"></div>
+              {/* Right Triangle Half */}
+              <div className="animate-splitRight w-28 h-40 bg-white rounded-r-2xl border-r-8 border-y-4 border-[#C97A28] shadow-xl p-2.5 flex flex-col justify-between relative overflow-hidden">
+                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
+                <div className="flex flex-col items-center justify-center gap-1.5 my-auto">
+                  <IllustratedFruit type="shine" />
+                  <span className="text-xs font-black text-stone-800">{currentRecipe.fruits[1]?.name || '생크림'}</span>
+                </div>
+                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
               </div>
             </div>
 
-            {/* Popup Info Card */}
+            {/* Popup Celebration Card */}
             {sliceStep === 'celebrating' && (
-              <div className="mt-2 bg-white rounded-2xl p-4 shadow-md border border-amber-200 max-w-sm w-full animate-popIn">
+              <div className="mt-3 bg-white rounded-2xl p-4 shadow-xl border-2 border-amber-400 max-w-sm w-full animate-popIn">
                 <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-xs font-bold mb-1">
                   {currentRecipe.tag}
                 </span>
@@ -235,9 +268,9 @@ export const SandoKitchen: React.FC<SandoKitchenProps> = ({
 
                 <button
                   onClick={handleFinishCelebration}
-                  className="mt-3 w-full py-2 px-4 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                  className="mt-3 w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow transition-all"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-amber-400" />
+                  <CheckCircle2 className="w-4 h-4 text-white" />
                   <span>우리 구역 진열대에 보관하기</span>
                 </button>
               </div>
