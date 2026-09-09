@@ -1,88 +1,65 @@
 import React, { useState } from 'react';
 import { District } from '../types';
-import { Calendar, Clock, Trophy, Info, X, Check, Sparkles } from 'lucide-react';
-import { InteractivePoster } from './InteractivePoster';
+import { Calendar, Clock, Trophy, Info, X, Check, ArrowLeft } from 'lucide-react';
 
 interface EventHeaderProps {
   districts: District[];
   activeDistrictId: string;
   onSelectDistrict: (id: string) => void;
+  onBackToPoster: () => void;
 }
 
 export const EventHeader: React.FC<EventHeaderProps> = ({
   districts,
   activeDistrictId,
   onSelectDistrict,
+  onBackToPoster,
 }) => {
   const [showNoticeModal, setShowNoticeModal] = useState(false);
 
-  // Active district object
   const activeDistrict = districts.find((d) => d.id === activeDistrictId) || districts[0];
-
-  // Derive current team (1 ~ 6) from active district id (e.g. '3-2' -> team 3)
   const activeTeamNumber = parseInt(activeDistrictId.split('-')[0], 10) || 1;
   const [selectedTeamTab, setSelectedTeamTab] = useState<number>(activeTeamNumber);
 
-  // Teams list 1 ~ 6
   const teams = [1, 2, 3, 4, 5, 6];
-
-  // Districts belonging to the selected team tab
   const currentTeamDistricts = districts.filter((d) => d.team === selectedTeamTab);
 
   return (
     <header className="mb-6 space-y-4">
-      {/* Interactive Animated Poster Hero Card */}
-      <div className="rounded-3xl bg-white p-5 sm:p-7 shadow-md border border-amber-200/80 flex flex-col lg:flex-row items-center gap-7">
-        {/* Interactive Poster Component where characters move when tapped */}
-        <div className="w-full lg:w-72 max-w-[320px] shrink-0">
-          <InteractivePoster onOpenNotice={() => setShowNoticeModal(true)} />
-        </div>
-
-        {/* Event Information & Context */}
-        <div className="flex-1 text-center lg:text-left space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-stone-700 text-xs font-semibold">
-            <span className="flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5 text-amber-600" />
-              43.9.12 (토)
-            </span>
-            <span className="text-stone-300">•</span>
-            <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-amber-600" />
-              하루 종일 ~ 21시 마감
-            </span>
-          </div>
+      {/* Top Compact Navigation & Title Bar */}
+      <div className="rounded-3xl bg-white p-4 sm:p-5 shadow-md border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          {/* Back to Poster Button */}
+          <button
+            onClick={onBackToPoster}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors shrink-0 shadow-sm"
+            title="포스터 메인 화면으로 돌아가기"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>포스터 보기</span>
+          </button>
 
           <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-stone-900 tracking-tight">
+            <h1 className="text-lg sm:text-xl font-black text-stone-900 leading-tight">
               새신자부 열매산도 쟁탈전
             </h1>
-            <p className="text-amber-800 text-sm sm:text-base font-bold mt-1">
-              미션을 수행하고 우리 구역의 열매산도를 완성하라!
-            </p>
-          </div>
-
-          <p className="text-xs sm:text-sm text-stone-600 max-w-xl leading-relaxed">
-            총 30개 구역(1-1 ~ 6-5) 참여! 미션 성공으로 <strong className="text-amber-900 font-bold">100POINT</strong>가 모일 때마다 
-            포스터 속 6가지 수제 과일산도 중 1개가 완성됩니다.
-          </p>
-
-          <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-2">
-            <button
-              onClick={() => setShowNoticeModal(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs sm:text-sm font-bold transition-colors"
-            >
-              <Info className="w-4 h-4 text-amber-700" />
-              <span>공식 요강 & 상품 안내</span>
-            </button>
-            <span className="text-xs text-stone-500 font-medium px-3 py-2 bg-stone-100 rounded-xl">
-              발신: 새신자부 찾기팀
+            <span className="text-xs text-amber-800 font-semibold">
+              100POINT마다 열매산도 1개 완성!
             </span>
           </div>
+        </div>
 
-          <div className="pt-1 text-xs text-amber-700 font-semibold flex items-center justify-center lg:justify-start gap-1">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>포스터 속 돋보기 탐정들과 과일산도를 직접 터치해보세요!</span>
-          </div>
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button
+            onClick={() => setShowNoticeModal(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 text-xs font-bold transition-colors"
+          >
+            <Info className="w-3.5 h-3.5 text-stone-500" />
+            <span>행사 요강</span>
+          </button>
+          <span className="text-[11px] text-stone-400 font-medium px-2 py-1 bg-stone-50 rounded-lg">
+            새신자부 찾기팀
+          </span>
         </div>
       </div>
 
@@ -101,7 +78,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
             </span>
           </div>
 
-          {/* Quick jump select dropdown for all 30 groups */}
+          {/* Quick jump select dropdown */}
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-stone-400">빠른 구역 이동:</span>
             <select

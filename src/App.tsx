@@ -8,6 +8,7 @@ import { MissionSelectorModal } from './components/MissionSelectorModal';
 import { ScratchMissionModal } from './components/ScratchMissionModal';
 import { AdminPanel } from './components/AdminPanel';
 import { BroadcastView } from './components/BroadcastView';
+import { LandingPosterHero } from './components/LandingPosterHero';
 import { createInitialDistricts } from './utils/districtData';
 import { sounds } from './utils/soundEffects';
 import { Utensils, Trophy } from 'lucide-react';
@@ -22,11 +23,14 @@ export function App() {
           return parsed;
         }
       } catch {
-        // fallback to fresh 30 districts
+        // fallback
       }
     }
     return createInitialDistricts();
   });
+
+  // Landing intro state: when entering, show ONLY the big poster!
+  const [hasStarted, setHasStarted] = useState<boolean>(false);
 
   const [activeDistrictId, setActiveDistrictId] = useState<string>('1-1');
   const [activeTab, setActiveTab] = useState<'kitchen' | 'ranking'>('kitchen');
@@ -118,9 +122,15 @@ export function App() {
     showToast('30개 구역 데이터가 초기화되었습니다.');
   };
 
+  // 1. If not started yet: Show ONLY the big poster screen!
+  if (!hasStarted) {
+    return <LandingPosterHero onStartEvent={() => setHasStarted(true)} />;
+  }
+
+  // 2. If started: Show full event application
   return (
-    <div className="min-h-screen bg-[#FAF6F0] p-3 sm:p-5 md:p-8">
-      {/* Toast Notification */}
+    <div className="min-h-screen bg-[#FAF6F0] p-3 sm:p-5 md:p-8 animate-popIn">
+      {/* Clean Toast Notification */}
       {toastMessage && (
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-stone-900 text-white px-5 py-2.5 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold animate-popIn">
           {toastMessage}
@@ -136,11 +146,12 @@ export function App() {
         />
       ) : (
         <div className="max-w-4xl mx-auto space-y-5">
-          {/* Header with 30 Districts Smart Selector */}
+          {/* Header with 30 Districts Smart Selector & Back to Poster button */}
           <EventHeader
             districts={districts}
             activeDistrictId={activeDistrictId}
             onSelectDistrict={(id) => setActiveDistrictId(id)}
+            onBackToPoster={() => setHasStarted(false)}
           />
 
           {/* Simple Tab Switcher */}
