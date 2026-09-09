@@ -10,6 +10,7 @@ import { AdminPanel } from './components/AdminPanel';
 import { BroadcastView } from './components/BroadcastView';
 import { SANDO_RECIPES } from './utils/sandoRecipes';
 import { sounds } from './utils/soundEffects';
+import { Utensils, Trophy } from 'lucide-react';
 
 const INITIAL_DISTRICTS: District[] = [
   {
@@ -23,26 +24,26 @@ const INITIAL_DISTRICTS: District[] = [
         id: 'sando_1_1',
         districtId: 1,
         districtName: '1구역',
-        recipe: SANDO_RECIPES[0], // Berry
+        recipe: SANDO_RECIPES[0], // Strawberry
         sandoNumber: 1,
         completedAt: '11:20',
-        contributors: ['김은혜(리더)', '민수(딸기)'],
+        contributors: ['김은혜', '박민수'],
       },
       {
         id: 'sando_1_2',
         districtId: 1,
         districtName: '1구역',
-        recipe: SANDO_RECIPES[1], // Green
+        recipe: SANDO_RECIPES[2], // Green grape
         sandoNumber: 2,
         completedAt: '13:45',
-        contributors: ['새신자 지우', '민수'],
+        contributors: ['새신자 지우', '이하은'],
       },
     ],
     members: [
-      { name: '김은혜(구역장)', roleFruit: '🍞 식빵', avatar: '👩‍🦰' },
-      { name: '새신자 지우', roleFruit: '🍓 딸기', avatar: '👧' },
-      { name: '박민수', roleFruit: '🥛 생크림', avatar: '🧑' },
-      { name: '이하은', roleFruit: '🍇 샤인머스캣', avatar: '👩' },
+      { name: '김은혜(구역장)', roleFruit: '식빵', avatar: '' },
+      { name: '새신자 지우', roleFruit: '딸기', avatar: '' },
+      { name: '박민수', roleFruit: '생크림', avatar: '' },
+      { name: '이하은', roleFruit: '샤인머스캣', avatar: '' },
     ],
   },
   {
@@ -56,35 +57,35 @@ const INITIAL_DISTRICTS: District[] = [
         id: 'sando_2_1',
         districtId: 2,
         districtName: '2구역',
-        recipe: SANDO_RECIPES[2], // Tropical
+        recipe: SANDO_RECIPES[3], // Mango
         sandoNumber: 1,
         completedAt: '10:50',
-        contributors: ['박준형', '정우'],
+        contributors: ['박준형', '최정우'],
       },
       {
         id: 'sando_2_2',
         districtId: 2,
         districtName: '2구역',
-        recipe: SANDO_RECIPES[0], // Berry
+        recipe: SANDO_RECIPES[0], // Strawberry
         sandoNumber: 2,
         completedAt: '12:15',
-        contributors: ['새신자 수진', '수아'],
+        contributors: ['새신자 수진', '김수아'],
       },
       {
         id: 'sando_2_3',
         districtId: 2,
         districtName: '2구역',
-        recipe: SANDO_RECIPES[5], // Legendary
+        recipe: SANDO_RECIPES[5], // Kiwi mango mix
         sandoNumber: 3,
         completedAt: '15:10',
-        contributors: ['2구역 전원 연합'],
+        contributors: ['2구역 연합'],
       },
     ],
     members: [
-      { name: '박준형(구역장)', roleFruit: '🍞 식빵', avatar: '👨' },
-      { name: '새신자 수진', roleFruit: '🥭 애플망고', avatar: '👧' },
-      { name: '최정우', roleFruit: '🍊 감귤', avatar: '🧑' },
-      { name: '김수아', roleFruit: '🫐 블루베리', avatar: '👩' },
+      { name: '박준형(구역장)', roleFruit: '식빵', avatar: '' },
+      { name: '새신자 수진', roleFruit: '애플망고', avatar: '' },
+      { name: '최정우', roleFruit: '감귤', avatar: '' },
+      { name: '김수아', roleFruit: '블루베리', avatar: '' },
     ],
   },
   {
@@ -98,26 +99,26 @@ const INITIAL_DISTRICTS: District[] = [
         id: 'sando_3_1',
         districtId: 3,
         districtName: '3구역',
-        recipe: SANDO_RECIPES[3], // Citrus
+        recipe: SANDO_RECIPES[1], // Tangerine
         sandoNumber: 1,
         completedAt: '11:05',
-        contributors: ['이민지', '찬우'],
+        contributors: ['이민지', '강찬우'],
       },
       {
         id: 'sando_3_2',
         districtId: 3,
         districtName: '3구역',
-        recipe: SANDO_RECIPES[1], // Green
+        recipe: SANDO_RECIPES[4], // Fig
         sandoNumber: 2,
         completedAt: '14:30',
-        contributors: ['새신자 영호', '다솜'],
+        contributors: ['새신자 영호', '윤다솜'],
       },
     ],
     members: [
-      { name: '이민지(구역장)', roleFruit: '🍞 식빵', avatar: '👩' },
-      { name: '새신자 영호', roleFruit: '🍇 샤인머스캣', avatar: '🧑' },
-      { name: '강찬우', roleFruit: '🍓 딸기', avatar: '👦' },
-      { name: '윤다솜', roleFruit: '🥛 생크림', avatar: '👧' },
+      { name: '이민지(구역장)', roleFruit: '식빵', avatar: '' },
+      { name: '새신자 영호', roleFruit: '샤인머스캣', avatar: '' },
+      { name: '강찬우', roleFruit: '딸기', avatar: '' },
+      { name: '윤다솜', roleFruit: '생크림', avatar: '' },
     ],
   },
   {
@@ -131,16 +132,16 @@ const INITIAL_DISTRICTS: District[] = [
         id: 'sando_4_1',
         districtId: 4,
         districtName: '4구역',
-        recipe: SANDO_RECIPES[4], // Blueberry
+        recipe: SANDO_RECIPES[0], // Strawberry
         sandoNumber: 1,
         completedAt: '13:00',
         contributors: ['최도윤', '새신자 서연'],
       },
     ],
     members: [
-      { name: '최도윤(구역장)', roleFruit: '🍞 식빵', avatar: '👨' },
-      { name: '새신자 서연', roleFruit: '🫐 블루베리', avatar: '👩' },
-      { name: '임재현', roleFruit: '🥭 망고', avatar: '🧑' },
+      { name: '최도윤(구역장)', roleFruit: '식빵', avatar: '' },
+      { name: '새신자 서연', roleFruit: '블루베리', avatar: '' },
+      { name: '임재현', roleFruit: '망고', avatar: '' },
     ],
   },
   {
@@ -151,9 +152,9 @@ const INITIAL_DISTRICTS: District[] = [
     currentPoints: 90,
     completedSandos: [],
     members: [
-      { name: '정소율(구역장)', roleFruit: '🍞 식빵', avatar: '👩' },
-      { name: '새신자 현우', roleFruit: '🍓 딸기', avatar: '👦' },
-      { name: '오세린', roleFruit: '🍊 감귤', avatar: '👧' },
+      { name: '정소율(구역장)', roleFruit: '식빵', avatar: '' },
+      { name: '새신자 현우', roleFruit: '딸기', avatar: '' },
+      { name: '오세린', roleFruit: '감귤', avatar: '' },
     ],
   },
   {
@@ -164,9 +165,9 @@ const INITIAL_DISTRICTS: District[] = [
     currentPoints: 75,
     completedSandos: [],
     members: [
-      { name: '한시온(구역장)', roleFruit: '🍞 식빵', avatar: '👨' },
-      { name: '새신자 나은', roleFruit: '🍇 샤인머스캣', avatar: '👧' },
-      { name: '송원빈', roleFruit: '🥛 생크림', avatar: '🧑' },
+      { name: '한시온(구역장)', roleFruit: '식빵', avatar: '' },
+      { name: '새신자 나은', roleFruit: '샤인머스캣', avatar: '' },
+      { name: '송원빈', roleFruit: '생크림', avatar: '' },
     ],
   },
 ];
@@ -184,7 +185,9 @@ export function App() {
     return INITIAL_DISTRICTS;
   });
 
-  const [activeDistrictId, setActiveDistrictId] = useState<number>(2); // Default to 2구역
+  const [activeDistrictId, setActiveDistrictId] = useState<number>(2);
+  const [activeTab, setActiveTab] = useState<'kitchen' | 'ranking'>('kitchen');
+
   const [isMissionModalOpen, setIsMissionModalOpen] = useState(false);
   const [scratchModalData, setScratchModalData] = useState<{
     mission: Mission;
@@ -192,7 +195,7 @@ export function App() {
   } | null>(null);
 
   const [isBroadcastMode, setIsBroadcastMode] = useState(false);
-  const [latestEventText, setLatestEventText] = useState('🔥 새신자부 열매산도 쟁탈전 현장 중계가 시작되었습니다!');
+  const [latestEventText, setLatestEventText] = useState('새신자부 열매산도 쟁탈전이 진행 중입니다.');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Save to localStorage
@@ -206,12 +209,11 @@ export function App() {
     setToastMessage(msg);
     setTimeout(() => {
       setToastMessage(null);
-    }, 4000);
+    }, 3500);
   };
 
-  // 1. Add points to a district
+  // Add points
   const handleAddPoints = (districtId: number, addedPoints: number, missionTitle?: string, contributor?: string) => {
-    // Play cream & pop sound
     sounds.playCream();
     setTimeout(() => sounds.playFruitPop(), 150);
 
@@ -228,12 +230,12 @@ export function App() {
       })
     );
 
-    const eventDesc = `🎉 [${activeDistrict.name}] ${contributor ? `${contributor} 님이 ` : ''}'${missionTitle || '미션'}' 완료 (+${addedPoints}P)!`;
+    const eventDesc = `[${activeDistrict.name}] ${contributor ? `${contributor} 님이 ` : ''}'${missionTitle || '미션'}' 완료 (+${addedPoints}P)`;
     setLatestEventText(eventDesc);
     showToast(eventDesc);
   };
 
-  // 2. Handle Sando completion (called when 100P reached and cut animation completes)
+  // Handle sando completion
   const handleSandoCompleted = (districtId: number, recipe: SandoRecipe, contributors: string[]) => {
     const nowTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -251,7 +253,6 @@ export function App() {
           contributors,
         };
 
-        // Subtract 100 points from currentPoints
         const remainingCurrent = Math.max(0, d.currentPoints - 100);
 
         return {
@@ -262,7 +263,7 @@ export function App() {
       })
     );
 
-    const eventDesc = `🚨 [${activeDistrict.name}] ${activeDistrict.completedSandos.length + 1}번째 '${recipe.name}' 완성!! 🏆`;
+    const eventDesc = `[${activeDistrict.name}] ${activeDistrict.completedSandos.length + 1}번째 '${recipe.name}' 완성!`;
     setLatestEventText(eventDesc);
     showToast(eventDesc);
   };
@@ -270,20 +271,19 @@ export function App() {
   const handleResetAllData = () => {
     setDistricts(INITIAL_DISTRICTS);
     localStorage.removeItem('fruit_sando_districts');
-    showToast('모든 데이터가 초기화되었습니다.');
+    showToast('데이터가 초기화되었습니다.');
   };
 
   return (
-    <div className="min-h-screen bg-cream-50/70 p-3 sm:p-5 md:p-8 relative">
-      {/* Toast Notification */}
+    <div className="min-h-screen bg-[#FAF6F0] p-3 sm:p-5 md:p-8">
+      {/* Clean Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-stone-900/95 text-white px-5 py-3 rounded-2xl shadow-2xl border-2 border-amber-400 flex items-center gap-2 text-xs md:text-sm font-black animate-popIn">
-          <span className="text-lg">📢</span>
-          <span>{toastMessage}</span>
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-stone-900 text-white px-5 py-2.5 rounded-2xl shadow-xl text-xs sm:text-sm font-semibold animate-popIn">
+          {toastMessage}
         </div>
       )}
 
-      {/* Main Broadcast Screen Mode */}
+      {/* Broadcast Mode */}
       {isBroadcastMode ? (
         <BroadcastView
           districts={districts}
@@ -291,18 +291,43 @@ export function App() {
           latestEvent={latestEventText}
         />
       ) : (
-        <div className="max-w-5xl mx-auto space-y-6">
-          {/* Header */}
+        <div className="max-w-4xl mx-auto space-y-5">
+          {/* Header with Poster Feature */}
           <EventHeader
             districts={districts}
             activeDistrictId={activeDistrictId}
             onSelectDistrict={(id) => setActiveDistrictId(id)}
           />
 
-          {/* Main 2-Column or Stacked Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left: Active District Sando Assembly & Cutting Kitchen (7 cols) */}
-            <div className="lg:col-span-7 space-y-6">
+          {/* Simple Tab Switcher (우리 구역 산도 vs 실시간 랭킹) */}
+          <div className="flex bg-stone-200/80 p-1 rounded-2xl max-w-sm mx-auto shadow-inner">
+            <button
+              onClick={() => setActiveTab('kitchen')}
+              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
+                activeTab === 'kitchen'
+                  ? 'bg-white text-stone-900 shadow-sm'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              <Utensils className="w-4 h-4 text-amber-600" />
+              <span>우리 구역 산도</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('ranking')}
+              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
+                activeTab === 'ranking'
+                  ? 'bg-white text-stone-900 shadow-sm'
+                  : 'text-stone-600 hover:text-stone-900'
+              }`}
+            >
+              <Trophy className="w-4 h-4 text-amber-600" />
+              <span>실시간 랭킹</span>
+            </button>
+          </div>
+
+          {/* Tab 1: Our District Kitchen & Sando Showcase */}
+          {activeTab === 'kitchen' && (
+            <div className="space-y-5 animate-popIn">
               <SandoKitchen
                 district={activeDistrict}
                 onSandoCompleted={handleSandoCompleted}
@@ -310,19 +335,23 @@ export function App() {
                 activeContributor={activeDistrict.members[0]?.name || '구역원'}
               />
 
-              {/* Showcase of completed sandos for active district */}
               <SandoShowcase district={activeDistrict} />
             </div>
+          )}
 
-            {/* Right: TOP 3 Victory Podium & Overall Leaderboard (5 cols) */}
-            <div className="lg:col-span-5 space-y-6">
+          {/* Tab 2: Live Leaderboard / Ranking */}
+          {activeTab === 'ranking' && (
+            <div className="animate-popIn">
               <Top3Podium
                 districts={districts}
-                onSelectDistrict={(id) => setActiveDistrictId(id)}
+                onSelectDistrict={(id) => {
+                  setActiveDistrictId(id);
+                  setActiveTab('kitchen');
+                }}
                 activeDistrictId={activeDistrictId}
               />
             </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -359,7 +388,7 @@ export function App() {
         />
       )}
 
-      {/* Organizer / Finding Team Admin Control Panel */}
+      {/* Coordinator Admin Panel */}
       <AdminPanel
         districts={districts}
         activeDistrictId={activeDistrictId}
