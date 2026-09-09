@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { District } from '../types';
-import { Trophy, Medal } from 'lucide-react';
+import { Trophy, Search } from 'lucide-react';
 
 interface Top3PodiumProps {
   districts: District[];
-  onSelectDistrict: (districtId: number) => void;
-  activeDistrictId: number;
+  onSelectDistrict: (districtId: string) => void;
+  activeDistrictId: string;
 }
 
 export const Top3Podium: React.FC<Top3PodiumProps> = ({
@@ -13,6 +13,9 @@ export const Top3Podium: React.FC<Top3PodiumProps> = ({
   onSelectDistrict,
   activeDistrictId,
 }) => {
+  const [filterTeam, setFilterTeam] = useState<number | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
   // Sort districts: 1st by completedSandos count (desc), 2nd by total cumulative points (desc)
   const sortedDistricts = [...districts].sort((a, b) => {
     if (b.completedSandos.length !== a.completedSandos.length) {
@@ -26,13 +29,20 @@ export const Top3Podium: React.FC<Top3PodiumProps> = ({
   const thirdPlace = sortedDistricts[2];
   const restDistricts = sortedDistricts.slice(3);
 
+  // Filter remaining districts by team or search
+  const filteredRestDistricts = restDistricts.filter((d) => {
+    const matchesTeam = filterTeam === 'all' || d.team === filterTeam;
+    const matchesSearch = !searchQuery || d.name.includes(searchQuery);
+    return matchesTeam && matchesSearch;
+  });
+
   return (
     <div className="rounded-3xl bg-white p-5 sm:p-6 shadow-md border border-amber-200/80">
       {/* Header */}
       <div className="text-center mb-5">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100/70 text-amber-900 text-xs font-bold mb-1.5">
           <Trophy className="w-3.5 h-3.5 text-amber-700" />
-          <span>실시간 구역 랭킹</span>
+          <span>30개 구역 실시간 랭킹</span>
         </div>
         <h3 className="text-xl font-black text-stone-900">
           우승 경쟁 현황
@@ -42,7 +52,7 @@ export const Top3Podium: React.FC<Top3PodiumProps> = ({
         </p>
       </div>
 
-      {/* TOP 3 Podium in warm, clean style */}
+      {/* TOP 3 Podium */}
       <div className="grid grid-cols-3 gap-2 sm:gap-3 items-end max-w-lg mx-auto pt-4 pb-3">
         {/* 2nd Place */}
         {secondPlace && (
@@ -144,26 +154,57 @@ export const Top3Podium: React.FC<Top3PodiumProps> = ({
         )}
       </div>
 
-      {/* Leaderboard Table for other districts */}
-      {restDistricts.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-stone-100 space-y-1.5">
-          {restDistricts.map((d, index) => {
-            const rank = index + 4;
+      {/* Search & Team Filter for 30 Groups */}
+      <div className="mt-5 pt-4 border-t border-stone-100 space-y-2">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-xs font-bold text-stone-700">전체 순위표 (4위 ~ 30위):</span>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setFilterTeam('all')}
+              className={`px-2 py-0.5 rounded-lg text-[11px] font-semibold ${
+                filterTeam === 'all'
+                  ? 'bg-stone-900 text-white font-bold'
+                  : 'bg-stone-100 text-stone-600'
+              }`}
+            >
+              전체
+            </button>
+            {[1, 2, 3, 4, 5, 6].map((t) => (
+              <button
+                key={t}
+                onClick={() => setFilterTeam(t)}
+                className={`px-2 py-0.5 rounded-lg text-[11px] font-semibold ${
+                  filterTeam === t
+                    ? 'bg-stone-900 text-white font-bold'
+                    : 'bg-stone-100 text-stone-600'
+                }`}
+              >
+                {t}팀
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Scrollable List of 30 Districts */}
+        <div className="max-h-72 overflow-y-auto space-y-1.5 pr-1">
+          {filteredRestDistricts.map((d) => {
+            // Find overall rank in sortedDistricts
+            const overallRank = sortedDistricts.findIndex((sd) => sd.id === d.id) + 1;
             const isSelected = activeDistrictId === d.id;
+
             return (
               <div
                 key={d.id}
                 onClick={() => onSelectDistrict(d.id)}
                 className={`flex items-center justify-between p-2.5 rounded-xl cursor-pointer text-xs transition-colors ${
                   isSelected
-                    ? 'bg-amber-100 text-stone-900 font-bold'
+                    ? 'bg-amber-100 text-stone-900 font-bold border border-amber-300'
                     : 'bg-stone-50 hover:bg-stone-100 text-stone-600'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-5 text-center font-bold text-stone-400">{rank}위</span>
+                  <span className="w-6 text-center font-bold text-stone-400">{overallRank}위</span>
                   <span className="font-semibold text-stone-800">{d.name}</span>
-                  <span className="text-[11px] text-stone-400">({d.leader})</span>
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -174,7 +215,7 @@ export const Top3Podium: React.FC<Top3PodiumProps> = ({
             );
           })}
         </div>
-      )}
+      </div>
     </div>
   );
 };

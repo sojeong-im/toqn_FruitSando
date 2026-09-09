@@ -23,17 +23,18 @@ export interface SandoRecipe {
 
 export interface CompletedSando {
   id: string;
-  districtId: number;
+  districtId: string;
   districtName: string;
   recipe: SandoRecipe;
-  sandoNumber: number; // e.g. "우리 구역 3번째 산도"
+  sandoNumber: number;
   completedAt: string;
-  contributors: string[]; // e.g. ["민수", "소정", "은혜"]
+  contributors: string[];
 }
 
 export interface District {
-  id: number;
-  name: string;
+  id: string; // e.g. '1-1', '2-3'
+  name: string; // e.g. '1-1구역'
+  team: number; // 1 ~ 6
   leader: string;
   points: number; // total cumulative points
   currentPoints: number; // points towards next sando (0 ~ 99)

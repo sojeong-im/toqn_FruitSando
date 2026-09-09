@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { District } from '../types';
-import { Calendar, Clock, Trophy, Info, X } from 'lucide-react';
+import { Calendar, Clock, Trophy, Info, X, Check } from 'lucide-react';
 
 interface EventHeaderProps {
   districts: District[];
-  activeDistrictId: number;
-  onSelectDistrict: (id: number) => void;
+  activeDistrictId: string;
+  onSelectDistrict: (id: string) => void;
 }
 
 export const EventHeader: React.FC<EventHeaderProps> = ({
@@ -15,16 +15,29 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
 }) => {
   const [showNoticeModal, setShowNoticeModal] = useState(false);
 
+  // Active district object
+  const activeDistrict = districts.find((d) => d.id === activeDistrictId) || districts[0];
+
+  // Derive current team (1 ~ 6) from active district id (e.g. '3-2' -> team 3)
+  const activeTeamNumber = parseInt(activeDistrictId.split('-')[0], 10) || 1;
+  const [selectedTeamTab, setSelectedTeamTab] = useState<number>(activeTeamNumber);
+
+  // Teams list 1 ~ 6
+  const teams = [1, 2, 3, 4, 5, 6];
+
+  // Districts belonging to the selected team tab
+  const currentTeamDistricts = districts.filter((d) => d.team === selectedTeamTab);
+
   return (
     <header className="mb-6">
       {/* Poster-centered Hero Banner */}
       <div className="rounded-3xl bg-white p-5 sm:p-6 shadow-md border border-amber-200/80 flex flex-col md:flex-row items-center gap-6">
-        {/* Actual Poster Image with clean framing */}
-        <div className="w-full md:w-52 max-w-[240px] shrink-0 rounded-2xl overflow-hidden shadow-lg border-2 border-amber-300 group">
+        {/* Actual Poster Image */}
+        <div className="w-full md:w-52 max-w-[220px] shrink-0 rounded-2xl overflow-hidden shadow-lg border-2 border-amber-300">
           <img
             src="/poster.jpg"
             alt="새신자부 열매산도 쟁탈전 공식 포스터"
-            className="w-full h-auto object-cover hover:scale-105 transition-transform duration-300"
+            className="w-full h-auto object-cover"
           />
         </div>
 
@@ -52,8 +65,8 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
           </div>
 
           <p className="text-xs sm:text-sm text-stone-500 max-w-xl leading-relaxed">
-            미션 성공 시 포인트를 획득하며, <strong className="text-amber-900 font-bold">100POINT</strong>가 모일 때마다 
-            포스터 속 6가지 수제 과일산도 중 1개가 완성됩니다. 가장 많은 산도를 완성한 상위 3개 구역에게 상품이 주어집니다.
+            총 30개 구역(1-1 ~ 6-5) 참여! 미션 성공으로 <strong className="text-amber-900 font-bold">100POINT</strong>가 모일 때마다 
+            포스터 속 수제 과일산도 1개가 완성됩니다.
           </p>
 
           <div className="pt-1 flex flex-wrap items-center justify-center md:justify-start gap-2">
@@ -64,41 +77,94 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
               <Info className="w-3.5 h-3.5 text-amber-700" />
               <span>공식 요강 & 상품 안내</span>
             </button>
-            <span className="text-xs text-stone-400 font-medium px-2 py-1 bg-stone-100 rounded-lg">
+            <span className="text-xs text-stone-400 font-medium px-2.5 py-1 bg-stone-100 rounded-lg">
               발신: 새신자부 찾기팀
             </span>
           </div>
         </div>
       </div>
 
-      {/* Clean District Selector Bar */}
-      <div className="mt-4 bg-white p-2 rounded-2xl border border-stone-200 shadow-sm flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-        <span className="text-xs font-bold text-stone-500 pl-3 pr-1 whitespace-nowrap">
-          구역 선택:
-        </span>
-        {districts.map((d) => {
-          const isSelected = activeDistrictId === d.id;
-          return (
-            <button
-              key={d.id}
-              onClick={() => onSelectDistrict(d.id)}
-              className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                isSelected
-                  ? 'bg-amber-500 text-white shadow-sm'
-                  : 'bg-stone-50 hover:bg-stone-100 text-stone-700 border border-stone-100'
-              }`}
+      {/* 30 Districts Smart Selector */}
+      <div className="mt-4 bg-white p-4 rounded-3xl border border-amber-200 shadow-sm space-y-3">
+        {/* Active District Status Ribbon */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-stone-500">현재 선택된 구역:</span>
+            <span className="px-3 py-1 rounded-xl bg-amber-500 text-white font-black text-sm shadow-sm flex items-center gap-1.5">
+              <Check className="w-3.5 h-3.5" />
+              {activeDistrict.name}
+            </span>
+          </div>
+
+          {/* Quick jump select dropdown for all 30 groups */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-stone-400">빠른 이동:</span>
+            <select
+              value={activeDistrictId}
+              onChange={(e) => {
+                const newId = e.target.value;
+                onSelectDistrict(newId);
+                const team = parseInt(newId.split('-')[0], 10);
+                if (team) setSelectedTeamTab(team);
+              }}
+              className="bg-stone-50 border border-stone-200 text-xs font-bold text-stone-800 rounded-xl px-2.5 py-1.5 focus:outline-none focus:border-amber-400"
             >
-              <span>{d.name}</span>
-              <span
-                className={`text-[11px] px-1.5 py-0.5 rounded-md font-bold ${
-                  isSelected ? 'bg-white/25 text-white' : 'bg-amber-100 text-amber-800'
+              {districts.map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.name} (산도 {d.completedSandos.length}개 / {d.currentPoints}P)
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* 1. Team Tabs (1팀 ~ 6팀) */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <span className="text-xs font-bold text-stone-400 pr-1 shrink-0">팀 선택:</span>
+          {teams.map((teamNum) => {
+            const isCurrentTeam = selectedTeamTab === teamNum;
+            return (
+              <button
+                key={teamNum}
+                onClick={() => setSelectedTeamTab(teamNum)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
+                  isCurrentTeam
+                    ? 'bg-stone-900 text-white shadow-sm'
+                    : 'bg-stone-100 hover:bg-stone-200 text-stone-600'
                 }`}
               >
-                산도 {d.completedSandos.length}개
-              </span>
-            </button>
-          );
-        })}
+                {teamNum}팀
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 2. Sub-districts for selected team (e.g. 1-1, 1-2, 1-3, 1-4, 1-5) */}
+        <div className="grid grid-cols-5 gap-1.5 sm:gap-2 pt-1">
+          {currentTeamDistricts.map((d) => {
+            const isSelected = activeDistrictId === d.id;
+            return (
+              <button
+                key={d.id}
+                onClick={() => onSelectDistrict(d.id)}
+                className={`py-2 px-1 rounded-xl text-xs font-bold transition-all flex flex-col items-center justify-center gap-0.5 ${
+                  isSelected
+                    ? 'bg-amber-500 text-white shadow-md shadow-amber-500/20'
+                    : 'bg-amber-50/70 hover:bg-amber-100 text-stone-800 border border-amber-200/60'
+                }`}
+              >
+                <span className="text-xs font-extrabold">{d.name.replace('구역', '')}</span>
+                <span
+                  className={`text-[10px] font-semibold ${
+                    isSelected ? 'text-amber-100' : 'text-amber-800'
+                  }`}
+                >
+                  산도 {d.completedSandos.length}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Official Announcement Modal */}
@@ -131,7 +197,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
                 <strong className="text-stone-900 block font-bold mb-1">일정 안내</strong>
                 <p>• 날짜: 43.9.12 (토)</p>
                 <p>• 시간: 하루 종일 ~ 21시 마감</p>
-                <p>• 진행: 구역별 미션 수행 및 포인트 획득</p>
+                <p>• 대상: 1-1 ~ 6-5 전 구역</p>
               </div>
 
               <div>

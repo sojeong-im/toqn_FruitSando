@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { District } from '../types';
-import { Settings, Plus, RotateCcw, Sparkles, Volume2, Monitor, ChevronDown, ChevronUp } from 'lucide-react';
+import { Settings, Sparkles, Volume2, Monitor, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
 interface AdminPanelProps {
   districts: District[];
-  activeDistrictId: number;
-  onSelectDistrict: (id: number) => void;
-  onAddDirectPoints: (districtId: number, points: number) => void;
+  activeDistrictId: string;
+  onSelectDistrict: (id: string) => void;
+  onAddDirectPoints: (districtId: string, points: number) => void;
   onResetAllData: () => void;
   isBroadcastMode: boolean;
   onToggleBroadcastMode: () => void;
@@ -30,20 +30,20 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-stone-900/90 hover:bg-stone-900 text-amber-300 font-bold text-xs shadow-2xl backdrop-blur-md border border-amber-500/40 transition-all hover:scale-105 active:scale-95"
+        className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-stone-900/95 hover:bg-black text-amber-300 font-bold text-xs shadow-xl backdrop-blur-md border border-amber-500/40 transition-all"
       >
-        <Settings className="w-4 h-4 text-amber-400" />
-        <span>진행팀 관리자 패널</span>
+        <Settings className="w-3.5 h-3.5 text-amber-400" />
+        <span>진행팀 관리 패널</span>
         {isOpen ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
       </button>
 
       {/* Expanded Admin Panel */}
       {isOpen && (
-        <div className="absolute bottom-12 right-0 w-80 md:w-96 rounded-3xl bg-stone-900/95 backdrop-blur-xl p-5 text-white shadow-2xl border-2 border-amber-500/40 animate-popIn">
+        <div className="absolute bottom-12 right-0 w-80 sm:w-96 rounded-3xl bg-stone-900/95 backdrop-blur-xl p-5 text-white shadow-2xl border border-stone-700 animate-popIn">
           <div className="flex items-center justify-between pb-3 border-b border-stone-800">
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-4 h-4 text-amber-400" />
-              <span className="text-sm font-black text-amber-300">찾기팀 행사 운영도구</span>
+              <span className="text-sm font-black text-amber-300">찾기팀 행사 관리</span>
             </div>
             <button
               onClick={() => setIsOpen(false)}
@@ -53,17 +53,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </button>
           </div>
 
-          {/* District Selector */}
+          {/* District Selector (30 Groups) */}
           <div className="mt-3">
-            <label className="text-xs text-stone-400 font-medium">관리 대상 구역 선택:</label>
+            <label className="text-xs text-stone-400 font-medium">관리 대상 구역 (총 30개):</label>
             <select
               value={activeDistrictId}
-              onChange={(e) => onSelectDistrict(Number(e.target.value))}
+              onChange={(e) => onSelectDistrict(e.target.value)}
               className="mt-1 w-full bg-stone-800 border border-stone-700 rounded-xl px-3 py-2 text-xs text-amber-200 font-bold focus:outline-none"
             >
               {districts.map((d) => (
                 <option key={d.id} value={d.id}>
-                  {d.name} ({d.leader}) - 산도 {d.completedSandos.length}개 / 진행 {d.currentPoints}P
+                  {d.name} - 산도 {d.completedSandos.length}개 / 진행 {d.currentPoints}P (총 {d.points}P)
                 </option>
               ))}
             </select>
@@ -74,14 +74,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             <label className="text-xs text-stone-400 font-medium">
               [{activeDistrict.name}] 포인트 즉시 가산:
             </label>
-            <div className="grid grid-cols-4 gap-1.5 mt-1.5">
+            <div className="grid grid-cols-5 gap-1.5 mt-1.5">
               {[+5, +10, +25, +50, +100].map((pts) => (
                 <button
                   key={pts}
                   onClick={() => onAddDirectPoints(activeDistrict.id, pts)}
                   className="py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-amber-300 text-xs font-black transition-colors"
                 >
-                  +{pts}P
+                  +{pts}
                 </button>
               ))}
             </div>
@@ -93,12 +93,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
               onClick={onToggleBroadcastMode}
               className={`w-full py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${
                 isBroadcastMode
-                  ? 'bg-amber-400 text-stone-950 font-black shadow-lg shadow-amber-400/20'
+                  ? 'bg-amber-400 text-stone-950 font-black'
                   : 'bg-stone-800 hover:bg-stone-700 text-stone-300'
               }`}
             >
               <Monitor className="w-4 h-4" />
-              <span>{isBroadcastMode ? '일반 모드로 복귀' : '본당 전광판 중계 모드 (빔프로젝터용)'}</span>
+              <span>{isBroadcastMode ? '일반 모드로 복귀' : '본당 전광판 중계 모드'}</span>
             </button>
 
             <div className="flex gap-2">
@@ -110,7 +110,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
                 className="flex-1 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-[11px] font-semibold flex items-center justify-center gap-1"
               >
                 <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                <span>컷팅 사운드 테스트</span>
+                <span>사운드 테스트</span>
               </button>
 
               <button

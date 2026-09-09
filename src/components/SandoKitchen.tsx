@@ -7,7 +7,7 @@ import { PlusCircle, Sparkles, CheckCircle2 } from 'lucide-react';
 
 interface SandoKitchenProps {
   district: District;
-  onSandoCompleted: (districtId: number, recipe: SandoRecipe, contributors: string[]) => void;
+  onSandoCompleted: (districtId: string, recipe: SandoRecipe, contributors: string[]) => void;
   onOpenMissionModal: () => void;
   activeContributor: string;
 }
