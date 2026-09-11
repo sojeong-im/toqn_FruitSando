@@ -156,27 +156,6 @@ export const TeamDistrictPicker: React.FC<TeamDistrictPickerProps> = ({
           </div>
         </div>
 
-        {/* All 30 Districts Quick Sheet (Accordion / Bottom Grid) */}
-        <div className="bg-[#F3EDE2] p-4 sm:p-5 rounded-3xl border border-amber-200/80 text-center">
-          <p className="text-xs text-stone-600 font-semibold mb-3">
-            혹시 다른 팀이신가요? 번호로 바로 선택하기:
-          </p>
-          <div className="flex flex-wrap justify-center gap-1.5 max-w-xl mx-auto">
-            {districts.map((d) => (
-              <button
-                key={d.id}
-                onClick={() => handleDistrictClick(d.id)}
-                className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  d.team === selectedTeam
-                    ? 'bg-amber-500 text-white font-black shadow-sm'
-                    : 'bg-white text-stone-700 hover:bg-amber-100 border border-amber-200/60'
-                }`}
-              >
-                {d.name}
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       {/* Footer info */}
