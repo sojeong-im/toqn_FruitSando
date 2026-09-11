@@ -264,6 +264,61 @@ class SoundFX {
       // Audio fallback
     }
   }
+
+  // 8. 75P 과일얹기 "초특급 화려한 뾰로롱~ 팡파르!"
+  playFruitMagicGrand() {
+    try {
+      this.initCtx();
+      if (!this.ctx) return;
+      const ctx = this.ctx;
+      const now = ctx.currentTime;
+
+      // Grand harp glissando + harmonic sparkle bell
+      const notes = [
+        523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98, 1975.53, 2093.0, 2637.02, 3135.96
+      ];
+      const speed = 0.045;
+
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        // Alternate between triangle (warm flute/harp) and sine (pure crystal)
+        osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * speed);
+
+        const startTime = now + idx * speed;
+        const duration = 0.45;
+
+        gain.gain.setValueAtTime(0.22, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      });
+
+      // Add a sparkling shimmer tail chord at the end
+      const chord = [1046.5, 1318.51, 1567.98, 2093.0];
+      const chordStart = now + notes.length * speed;
+      chord.forEach((freq) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, chordStart);
+        gain.gain.setValueAtTime(0.15, chordStart);
+        gain.gain.exponentialRampToValueAtTime(0.0001, chordStart + 0.6);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(chordStart);
+        osc.stop(chordStart + 0.6);
+      });
+    } catch {
+      // Audio fallback
+    }
+  }
 }
 
 export const sounds = new SoundFX();
