@@ -4,7 +4,6 @@ import {
   collection,
   doc,
   onSnapshot,
-  setDoc,
   writeBatch,
   Firestore,
   Unsubscribe,
@@ -12,6 +11,7 @@ import {
   arrayUnion,
   increment,
 } from 'firebase/firestore';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 import { District, CompletedSando } from '../types';
 
 export interface FirebaseConfig {
@@ -21,11 +21,23 @@ export interface FirebaseConfig {
   storageBucket: string;
   messagingSenderId: string;
   appId: string;
+  measurementId?: string;
 }
+
+// User's official Firebase configuration
+export const DEFAULT_FIREBASE_CONFIG: FirebaseConfig = {
+  apiKey: 'AIzaSyA4h5OssGt1SExUChRj46X084qdVcZdzis',
+  authDomain: 'toqn-fruitsando.firebaseapp.com',
+  projectId: 'toqn-fruitsando',
+  storageBucket: 'toqn-fruitsando.firebasestorage.app',
+  messagingSenderId: '866480841714',
+  appId: '1:866480841714:web:7152c07bb3212ca970c16b',
+  measurementId: 'G-617MXK8094',
+};
 
 const STORAGE_KEY = 'fruit_sando_firebase_config';
 
-export function getSavedFirebaseConfig(): FirebaseConfig | null {
+export function getSavedFirebaseConfig(): FirebaseConfig {
   const local = localStorage.getItem(STORAGE_KEY);
   if (local) {
     try {
@@ -39,16 +51,17 @@ export function getSavedFirebaseConfig(): FirebaseConfig | null {
   // Fallback to Vite env variables if present
   if (import.meta.env.VITE_FIREBASE_PROJECT_ID) {
     return {
-      apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
-      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
-      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || '',
-      storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || '',
-      messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
-      appId: import.meta.env.VITE_FIREBASE_APP_ID || '',
+      apiKey: import.meta.env.VITE_FIREBASE_API_KEY || DEFAULT_FIREBASE_CONFIG.apiKey,
+      authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || DEFAULT_FIREBASE_CONFIG.authDomain,
+      projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || DEFAULT_FIREBASE_CONFIG.projectId,
+      storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || DEFAULT_FIREBASE_CONFIG.storageBucket,
+      messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || DEFAULT_FIREBASE_CONFIG.messagingSenderId,
+      appId: import.meta.env.VITE_FIREBASE_APP_ID || DEFAULT_FIREBASE_CONFIG.appId,
     };
   }
 
-  return null;
+  // Default to provided Firebase configuration
+  return DEFAULT_FIREBASE_CONFIG;
 }
 
 export function saveFirebaseConfig(config: FirebaseConfig) {
@@ -77,6 +90,18 @@ class FirebaseService {
         this.app = initializeApp(config);
       }
       this.db = getFirestore(this.app);
+
+      // Initialize analytics safely if supported in browser
+      if (typeof window !== 'undefined') {
+        isSupported().then((yes) => {
+          if (yes && this.app) {
+            getAnalytics(this.app);
+          }
+        }).catch(() => {
+          // ignore
+        });
+      }
+
       return true;
     } catch (err) {
       console.error('Firebase initialization error:', err);
@@ -110,7 +135,6 @@ class FirebaseService {
       colRef,
       (snapshot) => {
         if (snapshot.empty) {
-          // If empty, caller can seed initial districts
           onData([]);
           return;
         }
@@ -120,7 +144,7 @@ class FirebaseService {
           districts.push(docSnap.data() as District);
         });
 
-        // Natural sort by id (1-1, 1-2, ..., 6-5)
+        // Natural sort by team and sub (1-1, 1-2, ..., 6-5)
         districts.sort((a, b) => {
           const [teamA, subA] = a.id.split('-').map(Number);
           const [teamB, subB] = b.id.split('-').map(Number);
