@@ -27,15 +27,18 @@ export const RealMilkBread: React.FC<RealMilkBreadProps> = ({ className = '' }) 
         const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imgData.data;
 
-        // Remove the black background around the bread slice
+        // Remove the black background around the bread slice with smooth feathering
         for (let i = 0; i < data.length; i += 4) {
           const r = data[i];
           const g = data[i + 1];
           const b = data[i + 2];
+          const maxVal = Math.max(r, g, b);
 
-          // Threshold for black background
-          if (r < 40 && g < 40 && b < 40) {
+          if (maxVal < 38) {
             data[i + 3] = 0; // Make transparent
+          } else if (maxVal < 60) {
+            // Smooth edge alpha
+            data[i + 3] = Math.round(((maxVal - 38) / 22) * 255);
           }
         }
 

@@ -51,6 +51,20 @@ export default {
         splitRight: {
           '0%': { transform: 'translateX(0) rotate(0deg)' },
           '100%': { transform: 'translateX(38px) rotate(6deg)' }
+        },
+        magicPop: {
+          '0%': { transform: 'scale(0.5) rotate(-10deg)', opacity: '0', filter: 'brightness(2) drop-shadow(0 0 30px rgba(251,191,36,0.9))' },
+          '60%': { transform: 'scale(1.12) rotate(4deg)', opacity: '1', filter: 'brightness(1.3) drop-shadow(0 0 20px rgba(251,191,36,0.6))' },
+          '100%': { transform: 'scale(1) rotate(0deg)', opacity: '1', filter: 'brightness(1)' }
+        },
+        sparkleFloat: {
+          '0%': { transform: 'translateY(10px) scale(0) rotate(0deg)', opacity: '0' },
+          '50%': { transform: 'translateY(-15px) scale(1.2) rotate(180deg)', opacity: '1' },
+          '100%': { transform: 'translateY(-35px) scale(0.6) rotate(360deg)', opacity: '0' }
+        },
+        haloPulse: {
+          '0%, 100%': { transform: 'scale(0.95)', opacity: '0.4' },
+          '50%': { transform: 'scale(1.1)', opacity: '0.8' }
         }
       },
       animation: {
@@ -59,6 +73,9 @@ export default {
         slash: 'slash 0.5s ease-out forwards',
         splitLeft: 'splitLeft 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
         splitRight: 'splitRight 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+        magicPop: 'magicPop 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+        sparkleFloat: 'sparkleFloat 1.2s ease-out infinite',
+        haloPulse: 'haloPulse 2.5s ease-in-out infinite',
       }
     },
   },

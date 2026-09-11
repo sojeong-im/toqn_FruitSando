@@ -228,6 +228,42 @@ class SoundFX {
       // Audio fallback
     }
   }
+
+  // 7. 마법 변신 "뾰로롱~!" 차임 사운드
+  playMagicTwinkle() {
+    try {
+      this.initCtx();
+      if (!this.ctx) return;
+      const ctx = this.ctx;
+      const now = ctx.currentTime;
+
+      // Sparkling bell / glockenspiel arpeggio
+      const sparkleNotes = [659.25, 783.99, 987.77, 1318.51, 1567.98, 1975.53, 2637.02];
+      const speed = 0.055;
+
+      sparkleNotes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * speed);
+
+        const startTime = now + idx * speed;
+        const duration = 0.35;
+
+        gain.gain.setValueAtTime(0.2, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + duration);
+      });
+    } catch {
+      // Audio fallback
+    }
+  }
 }
 
 export const sounds = new SoundFX();
