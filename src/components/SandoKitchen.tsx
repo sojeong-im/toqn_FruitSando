@@ -10,9 +10,7 @@ import {
   FluffyCreamLayer,
   IllustratedFruit,
 } from './BreadIllustrations';
-import { RealMilkBread } from './RealMilkBread';
-import { RealCreamBread } from './RealCreamBread';
-import { RealFruitBread } from './RealFruitBread';
+import { RealSandoVisualizer } from './RealSandoVisualizer';
 
 interface SandoKitchenProps {
   district: District;
@@ -150,54 +148,9 @@ export const SandoKitchen: React.FC<SandoKitchenProps> = ({
 
       {/* Illustrated Artisanal Sando Assembly & Cutting Stage */}
       <div className="relative min-h-[300px] flex items-center justify-center bg-[#FBF7F0] rounded-2xl border-2 border-amber-200/60 p-6 overflow-hidden">
-        {/* Regular Assembly Stage with 3-tier Real Bread Progression */}
+        {/* Seamless Layered Cross-fading Real Sando Visualizer */}
         {sliceStep === 'idle' && (
-          <>
-            {/* 🍞 1단계: 0P ~ 49P (우유식빵 단계) - 촉촉한 기본 우유식빵 */}
-            {currentPoints < 50 ? (
-              <div className="flex flex-col items-center justify-center text-center animate-popIn">
-                <RealMilkBread className="w-48 h-48 sm:w-56 sm:h-56" />
-                <div className="mt-3">
-                  <span className="text-xs text-amber-900 font-black bg-amber-100 px-3.5 py-1 rounded-full border border-amber-300 shadow-sm">
-                    🍞 0P 단계: 부드럽고 폭신한 우유식빵 준비 완료!
-                  </span>
-                  <p className="text-[11px] text-stone-500 mt-1.5 font-medium">
-                    미션을 인증하여 50P에 도달하면 달콤한 생크림이 뾰로롱 발라집니다! ✨
-                  </p>
-                </div>
-              </div>
-            ) : currentPoints < 75 ? (
-              /* ✨ 2단계: 50P ~ 74P (생크림 단계) - 뾰로롱 우유 생크림 식빵 */
-              <div className="flex flex-col items-center justify-center text-center animate-magicPop">
-                <RealCreamBread className="w-48 h-48 sm:w-56 sm:h-56" />
-                <div className="mt-3">
-                  <span className="text-xs text-amber-900 font-black bg-gradient-to-r from-amber-100 via-amber-200 to-amber-100 px-4 py-1.5 rounded-full border border-amber-300 shadow-sm flex items-center justify-center gap-1.5">
-                    <span>✨</span>
-                    <span>50P 단계: 부드러운 우유 생크림이 뾰로롱~ 발라졌어요!</span>
-                    <span>✨</span>
-                  </span>
-                  <p className="text-[11px] text-stone-500 mt-1.5 font-medium">
-                    식빵을 터치하면 마법 사운드(뾰로롱✨)가 울려요! (75P 과일 얹기 대기 중)
-                  </p>
-                </div>
-              </div>
-            ) : (
-              /* 🥝🍊 3단계: 75P ~ 99P (과일얹기 단계) - 키위·무화과·귤 초특급 화려한 뾰로롱 과일 산도! */
-              <div className="flex flex-col items-center justify-center text-center animate-magicPop">
-                <RealFruitBread className="w-48 h-48 sm:w-56 sm:h-56" />
-                <div className="mt-3">
-                  <span className="text-xs text-amber-950 font-black bg-gradient-to-r from-lime-200 via-amber-200 to-orange-200 px-4 py-1.5 rounded-full border border-amber-300 shadow-md flex items-center justify-center gap-1.5">
-                    <span>🥝</span>
-                    <span>75P 단계: 키위·무화과·귤 생과일이 화려하게 뾰로롱 안착!</span>
-                    <span>🍊</span>
-                  </span>
-                  <p className="text-[11px] text-stone-500 mt-1.5 font-medium">
-                    식빵을 터치하면 화려한 과일 팡파르가 터져요! (100P 달성 시 대각선 컷팅!)
-                  </p>
-                </div>
-              </div>
-            )}
-          </>
+          <RealSandoVisualizer currentPoints={currentPoints} />
         )}
 
         {/* Covering Top Illustrated Bread */}
