@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { Mission, MissionCategory, District } from '../types';
 import { OFFICIAL_MISSIONS } from '../utils/missions';
-import { X, Check, Gift } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 
 interface MissionSelectorModalProps {
   district: District;
   onClose: () => void;
-  onSelectForScratch: (mission: Mission, contributorName: string) => void;
   onQuickApply: (mission: Mission, contributorName: string) => void;
 }
 
 export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
   district,
   onClose,
-  onSelectForScratch,
   onQuickApply,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<MissionCategory | '전체'>('전체');
@@ -139,24 +137,14 @@ export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
                 )}
               </div>
 
-              {/* Action Buttons: Spacious and clearly separated */}
-              <div className="pt-2 border-t border-stone-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2">
-                {/* 1. Scratch Lottery */}
-                <button
-                  onClick={() => onSelectForScratch(m, activeContributorName)}
-                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 active:scale-95 text-stone-950 text-xs sm:text-sm font-extrabold shadow-sm flex items-center justify-center gap-1.5 transition-all"
-                >
-                  <Gift className="w-4 h-4" />
-                  <span>즉석 복권 긁기로 인증</span>
-                </button>
-
-                {/* 2. Direct Apply */}
+              {/* Action Button: Direct Apply */}
+              <div className="pt-2.5 border-t border-stone-100 flex items-center justify-end">
                 <button
                   onClick={() => onQuickApply(m, activeContributorName)}
-                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-stone-900 hover:bg-black active:scale-95 text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-white text-xs sm:text-sm font-black shadow-sm flex items-center justify-center gap-2 transition-all hover:shadow"
                 >
-                  <Check className="w-4 h-4 text-amber-400" />
-                  <span>바로 {m.points}P 적립</span>
+                  <Check className="w-4 h-4 text-white stroke-[3]" />
+                  <span>바로 {m.points}P 적립하기</span>
                 </button>
               </div>
             </div>

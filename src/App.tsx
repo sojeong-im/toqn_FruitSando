@@ -4,7 +4,6 @@ import { EventHeader } from './components/EventHeader';
 import { SandoKitchen } from './components/SandoKitchen';
 import { SandoShowcase } from './components/SandoShowcase';
 import { MissionSelectorModal } from './components/MissionSelectorModal';
-import { ScratchMissionModal } from './components/ScratchMissionModal';
 import { AdminPage } from './components/AdminPage';
 import { LandingPosterHero } from './components/LandingPosterHero';
 import { TeamDistrictPicker } from './components/TeamDistrictPicker';
@@ -42,10 +41,6 @@ export function App() {
   const [activeDistrictId, setActiveDistrictId] = useState<string>('1-1');
 
   const [isMissionModalOpen, setIsMissionModalOpen] = useState(false);
-  const [scratchModalData, setScratchModalData] = useState<{
-    mission: Mission;
-    contributorName: string;
-  } | null>(null);
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const districtsRef = useRef(districts);
@@ -288,30 +283,9 @@ export function App() {
         <MissionSelectorModal
           district={activeDistrict}
           onClose={() => setIsMissionModalOpen(false)}
-          onSelectForScratch={(mission, contributor) => {
-            setIsMissionModalOpen(false);
-            setScratchModalData({ mission, contributorName: contributor });
-          }}
           onQuickApply={(mission, contributor) => {
             setIsMissionModalOpen(false);
             handleAddPoints(activeDistrict.id, mission.points, mission.title, contributor);
-          }}
-        />
-      )}
-
-      {/* Scratch Lottery Modal */}
-      {scratchModalData && (
-        <ScratchMissionModal
-          mission={scratchModalData.mission}
-          contributorName={scratchModalData.contributorName}
-          onClose={() => setScratchModalData(null)}
-          onApplyPoints={(pts, title) => {
-            handleAddPoints(
-              activeDistrict.id,
-              pts,
-              title,
-              scratchModalData.contributorName
-            );
           }}
         />
       )}
