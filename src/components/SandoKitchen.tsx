@@ -10,6 +10,7 @@ import {
   FluffyCreamLayer,
   IllustratedFruit,
 } from './BreadIllustrations';
+import { RealMilkBread } from './RealMilkBread';
 
 interface SandoKitchenProps {
   district: District;
@@ -127,61 +128,74 @@ export const SandoKitchen: React.FC<SandoKitchenProps> = ({
         </div>
 
         <div className="flex justify-between text-[11px] text-stone-500 mt-2 px-0.5 font-medium">
-          <span>0P (우유식빵)</span>
-          <span>50P (생크림)</span>
-          <span>75P (과일얹기)</span>
-          <span>100P (대각선 컷팅)</span>
+          <span className={currentPoints < 20 ? 'text-amber-900 font-black underline underline-offset-2' : ''}>
+            0P (우유식빵)
+          </span>
+          <span className={currentPoints >= 20 && currentPoints < 50 ? 'text-amber-900 font-black underline underline-offset-2' : ''}>
+            50P (생크림)
+          </span>
+          <span className={currentPoints >= 50 && currentPoints < 100 ? 'text-amber-900 font-black underline underline-offset-2' : ''}>
+            75P (과일얹기)
+          </span>
+          <span className={currentPoints >= 100 ? 'text-amber-900 font-black underline underline-offset-2' : ''}>
+            100P (대각선 컷팅)
+          </span>
         </div>
       </div>
 
       {/* Illustrated Artisanal Sando Assembly & Cutting Stage */}
-      <div className="relative min-h-[290px] flex items-center justify-center bg-[#FBF7F0] rounded-2xl border-2 border-amber-200/60 p-6 overflow-hidden">
-        {/* Regular Assembly Stage with Illustrated Bread */}
+      <div className="relative min-h-[300px] flex items-center justify-center bg-[#FBF7F0] rounded-2xl border-2 border-amber-200/60 p-6 overflow-hidden">
+        {/* Regular Assembly Stage with Real Milk Bread at 0P */}
         {sliceStep === 'idle' && (
-          <div className="flex flex-col items-center justify-center text-center">
-            {/* 3D Stack of Illustrated Layers */}
-            <div className="relative w-64 min-h-[170px] flex flex-col items-center justify-end pb-2">
-              {/* Fresh Fruits Layer (Appears when points >= 50) */}
-              {currentPoints >= 50 && (
-                <div className="flex items-center justify-center gap-3 z-20 mb-[-6px] animate-popIn">
-                  <IllustratedFruit type="strawberry" />
-                  {currentPoints >= 65 && <IllustratedFruit type="shine" />}
-                  {currentPoints >= 80 && <IllustratedFruit type="mango" />}
-                  {currentPoints >= 90 && <IllustratedFruit type="orange" />}
+          <>
+            {/* 🍞 0P (우유식빵) 단계일 때: 업로드해주신 식빵 이미지가 중앙에 시원하게 뜸! */}
+            {currentPoints < 20 ? (
+              <div className="flex flex-col items-center justify-center text-center animate-popIn">
+                <RealMilkBread className="w-48 h-48 sm:w-56 sm:h-56" />
+                <div className="mt-3">
+                  <span className="text-xs text-amber-900 font-black bg-amber-100 px-3.5 py-1 rounded-full border border-amber-300 shadow-sm">
+                    🍞 0P 단계: 부드럽고 폭신한 우유식빵 준비 완료!
+                  </span>
+                  <p className="text-[11px] text-stone-500 mt-1.5 font-medium">
+                    미션을 인증하여 점수를 모으면 생크림과 신선한 과일이 채워집니다.
+                  </p>
                 </div>
-              )}
-
-              {/* Fluffy Whipped Cream Layer (Appears when points >= 20) */}
-              {currentPoints >= 20 && (
-                <FluffyCreamLayer progress={currentPoints} />
-              )}
-
-              {/* Authentic Illustrated Milk Bread Bottom Slice */}
-              <div className="z-0 filter drop-shadow-md">
-                <BreadSliceBase />
               </div>
+            ) : (
+              /* 점수가 쌓였을 때 (20P ~ 99P): 생크림 & 과일 조립 레이어 */
+              <div className="flex flex-col items-center justify-center text-center animate-popIn">
+                <div className="relative w-64 min-h-[170px] flex flex-col items-center justify-end pb-2">
+                  {/* Fresh Fruits Layer (Appears when points >= 50) */}
+                  {currentPoints >= 50 && (
+                    <div className="flex items-center justify-center gap-3 z-20 mb-[-6px] animate-popIn">
+                      <IllustratedFruit type="strawberry" />
+                      {currentPoints >= 65 && <IllustratedFruit type="shine" />}
+                      {currentPoints >= 80 && <IllustratedFruit type="mango" />}
+                      {currentPoints >= 90 && <IllustratedFruit type="orange" />}
+                    </div>
+                  )}
 
-              {/* Empty state instruction */}
-              {currentPoints < 20 && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-white/40 backdrop-blur-[1px] rounded-xl">
-                  <p className="text-xs font-bold text-amber-900">
-                    촉촉한 우유 식빵 베이스 준비 완료!
-                  </p>
-                  <p className="text-[11px] text-stone-500 mt-1">
-                    미션을 완수하여 점수를 올리면 생크림과 과일이 채워집니다.
-                  </p>
+                  {/* Fluffy Whipped Cream Layer (Appears when points >= 20) */}
+                  {currentPoints >= 20 && (
+                    <FluffyCreamLayer progress={currentPoints} />
+                  )}
+
+                  {/* Authentic Illustrated Milk Bread Bottom Slice */}
+                  <div className="z-0 filter drop-shadow-md">
+                    <BreadSliceBase />
+                  </div>
                 </div>
-              )}
-            </div>
 
-            <div className="mt-3">
-              <span className="text-xs text-amber-800 font-bold bg-amber-100/80 px-3 py-1 rounded-full border border-amber-200">
-                {currentPoints < 50
-                  ? '🍞 폭신폭신한 수제 식빵 위에 크림을 올리는 중'
-                  : '🍓 알록달록 신선한 생과일이 조립되는 중!'}
-              </span>
-            </div>
-          </div>
+                <div className="mt-3">
+                  <span className="text-xs text-amber-800 font-bold bg-amber-100/80 px-3 py-1 rounded-full border border-amber-200">
+                    {currentPoints < 50
+                      ? '🥛 폭신폭신한 식빵 위에 우유 생크림을 올리는 중'
+                      : '🍓 알록달록 신선한 생과일이 조립되는 중!'}
+                  </span>
+                </div>
+              </div>
+            )}
+          </>
         )}
 
         {/* Covering Top Illustrated Bread */}
