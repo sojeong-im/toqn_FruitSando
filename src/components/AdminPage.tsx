@@ -67,8 +67,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   const handlePinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Default PIN: 7777 or 1234
-    if (pinInput === '7777' || pinInput === '1234') {
+    // Official organizer PIN: 00347
+    if (pinInput === '00347') {
       setIsAuthenticated(true);
       sessionStorage.setItem('fruit_sando_admin_auth', 'true');
       setPinError(false);
@@ -133,7 +133,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           <form onSubmit={handlePinSubmit} className="mt-5 space-y-3">
             <input
               type="password"
-              placeholder="PIN 번호 입력 (기본: 7777)"
+              placeholder="관리자 비밀번호 입력"
               value={pinInput}
               onChange={(e) => setPinInput(e.target.value)}
               className="w-full px-4 py-3 rounded-xl bg-stone-50 border border-stone-300 text-center text-lg font-bold tracking-widest focus:outline-none focus:border-amber-500"
@@ -142,7 +142,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
             {pinError && (
               <p className="text-xs text-rose-500 font-bold">
-                비밀번호가 올바르지 않습니다. (기본: 7777)
+                비밀번호가 올바르지 않습니다.
               </p>
             )}
 
