@@ -45,34 +45,31 @@ export const SandoShowcase: React.FC<SandoShowcaseProps> = ({ district }) => {
               </span>
             </div>
 
-            {/* Sando Cards */}
-            <div className="flex items-end gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-none">
+            {/* Sando Cards on Wood Board */}
+            <div className="flex items-end gap-3 sm:gap-4 overflow-x-auto pb-3 pt-2 scrollbar-none">
               {district.completedSandos.map((sando, idx) => {
                 const recipe = sando.recipe;
                 return (
                   <div
                     key={sando.id || idx}
                     onClick={() => setSelectedSando(sando)}
-                    className="cursor-pointer flex flex-col items-center shrink-0 transition-transform hover:-translate-y-1.5"
+                    className="cursor-pointer flex flex-col items-center shrink-0 transition-transform duration-300 hover:-translate-y-2 group"
                   >
-                    {/* Sando Body */}
-                    <div className="w-16 sm:w-20 h-28 sm:h-36 bg-white rounded-t-xl border-x-4 border-t-4 border-[#EAD2B2] shadow-md flex flex-col justify-between overflow-hidden">
-                      <div className="w-full h-2 bg-[#D1A066] shrink-0" />
-                      <div className="flex-1 w-full bg-white flex flex-col items-center justify-center p-1 text-center">
-                        <span className="text-xs font-extrabold text-stone-800">
-                          {recipe.fruits[0]?.name}
-                        </span>
-                        <span className="text-[10px] text-stone-400 mt-0.5">산도</span>
-                      </div>
-                      <div className="w-full h-2 bg-[#D1A066] shrink-0" />
+                    {/* Real Completed Fruit Sando Image */}
+                    <div className="relative w-20 sm:w-24 h-28 sm:h-36 flex items-center justify-center">
+                      <img
+                        src="/completed-sando.png"
+                        alt={recipe.name}
+                        className="w-full h-full object-contain filter drop-shadow-[0_12px_18px_rgba(0,0,0,0.45)] group-hover:scale-110 transition-transform duration-300"
+                      />
+                      <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full shadow border border-amber-200">
+                        #{idx + 1}
+                      </span>
                     </div>
 
                     {/* Label */}
-                    <div className="mt-1.5 text-center">
-                      <span className="text-[10px] font-bold text-amber-200 bg-black/40 px-1.5 py-0.5 rounded">
-                        #{idx + 1}
-                      </span>
-                      <p className="text-[11px] font-semibold text-amber-100 truncate max-w-[70px] mt-0.5">
+                    <div className="mt-2 text-center">
+                      <p className="text-[11px] font-bold text-amber-100 truncate max-w-[80px] bg-black/45 px-2 py-0.5 rounded-md border border-amber-200/20 shadow-sm">
                         {recipe.name.replace(' 산도', '')}
                       </p>
                     </div>
@@ -97,6 +94,17 @@ export const SandoShowcase: React.FC<SandoShowcaseProps> = ({ district }) => {
             <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-xs font-bold mb-2">
               #{selectedSando.sandoNumber}번째 완성 산도
             </span>
+
+            {/* Sando Showcase Image in Modal */}
+            <div className="relative my-3 flex items-center justify-center">
+              <div className="absolute inset-0 bg-amber-200/40 rounded-full blur-xl -m-2" />
+              <img
+                src="/completed-sando.png"
+                alt={selectedSando.recipe.name}
+                className="w-32 h-44 object-contain filter drop-shadow-[0_16px_28px_rgba(180,83,9,0.35)] animate-popIn z-10"
+              />
+            </div>
+
             <h3 className="text-lg font-black text-stone-900">{selectedSando.recipe.name}</h3>
             <p className="text-xs text-stone-500 mt-1">{selectedSando.recipe.subName}</p>
             <p className="text-xs text-stone-600 mt-3 bg-stone-50 p-3 rounded-xl border border-stone-200">

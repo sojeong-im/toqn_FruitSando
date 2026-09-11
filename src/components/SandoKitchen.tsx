@@ -203,26 +203,24 @@ export const SandoKitchen: React.FC<SandoKitchenProps> = ({
         {/* Slices Split open & Celebration */}
         {(sliceStep === 'split' || sliceStep === 'celebrating') && currentRecipe && (
           <div className="flex flex-col items-center justify-center w-full animate-popIn text-center">
-            {/* Split Sando Halves with Illustrated Crust and Cream */}
+            {/* Split Sando Halves with Real Completed Fruit Sando Images */}
             <div className="flex items-center justify-center gap-4 my-2">
               {/* Left Triangle Half */}
-              <div className="animate-splitLeft w-28 h-40 bg-white rounded-l-2xl border-l-8 border-y-4 border-[#C97A28] shadow-xl p-2.5 flex flex-col justify-between relative overflow-hidden">
-                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
-                <div className="flex flex-col items-center justify-center gap-1.5 my-auto">
-                  <IllustratedFruit type="strawberry" />
-                  <span className="text-xs font-black text-stone-800">{currentRecipe.fruits[0]?.name}</span>
-                </div>
-                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
+              <div className="animate-splitLeft flex flex-col items-center">
+                <img
+                  src="/completed-sando.png"
+                  alt="완성된 열매산도"
+                  className="w-24 sm:w-28 h-36 sm:h-44 object-contain filter drop-shadow-[0_16px_28px_rgba(180,83,9,0.35)] scale-x-[-1]"
+                />
               </div>
 
               {/* Right Triangle Half */}
-              <div className="animate-splitRight w-28 h-40 bg-white rounded-r-2xl border-r-8 border-y-4 border-[#C97A28] shadow-xl p-2.5 flex flex-col justify-between relative overflow-hidden">
-                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
-                <div className="flex flex-col items-center justify-center gap-1.5 my-auto">
-                  <IllustratedFruit type="shine" />
-                  <span className="text-xs font-black text-stone-800">{currentRecipe.fruits[1]?.name || '생크림'}</span>
-                </div>
-                <div className="w-full h-2 bg-[#A85717] rounded-full shrink-0"></div>
+              <div className="animate-splitRight flex flex-col items-center">
+                <img
+                  src="/completed-sando.png"
+                  alt="완성된 열매산도"
+                  className="w-24 sm:w-28 h-36 sm:h-44 object-contain filter drop-shadow-[0_16px_28px_rgba(180,83,9,0.35)]"
+                />
               </div>
             </div>
 
