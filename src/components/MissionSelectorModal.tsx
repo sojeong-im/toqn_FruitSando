@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mission, MissionCategory, District } from '../types';
 import { OFFICIAL_MISSIONS } from '../utils/missions';
-import { X, User, Check, Gift } from 'lucide-react';
+import { X, Check, Gift } from 'lucide-react';
 
 interface MissionSelectorModalProps {
   district: District;
@@ -17,8 +17,6 @@ export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
   onQuickApply,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<MissionCategory | '전체'>('전체');
-  const [contributor, setContributor] = useState<string>(district.members[0]?.name || '');
-  const [customName, setCustomName] = useState<string>('');
 
   const categories: (MissionCategory | '전체')[] = ['전체', '노방', '지인', '팀/소모임', '개척', '찾기', '특별'];
 
@@ -26,7 +24,7 @@ export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
     ? OFFICIAL_MISSIONS
     : OFFICIAL_MISSIONS.filter((m) => m.category === selectedCategory);
 
-  const activeContributorName = customName.trim() || contributor || '구역원';
+  const activeContributorName = `${district.name} 구역원`;
 
   // Category badge colors for visual distinction
   const getCategoryBadgeClass = (category: MissionCategory) => {
@@ -72,68 +70,43 @@ export const MissionSelectorModal: React.FC<MissionSelectorModalProps> = ({
           </button>
         </div>
 
-        {/* Member Selector */}
-        <div className="my-3.5 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-stone-800 mb-2">
-            <User className="w-4 h-4 text-amber-600" />
-            <span>미션 수행자 선택 (새신자/구역원):</span>
+        {/* 🏷️ Prominent Category Filter Tabs Bar */}
+        <div className="py-3.5 my-1">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs font-black text-stone-700">카테고리 선택:</span>
+            <span className="text-xs font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              {selectedCategory === '전체' ? '전체 항목' : `${selectedCategory} 미션`} ({filteredMissions.length}개)
+            </span>
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-2">
-            {district.members.map((m) => (
-              <button
-                key={m.name}
-                type="button"
-                onClick={() => {
-                  setContributor(m.name);
-                  setCustomName('');
-                }}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                  contributor === m.name && !customName
-                    ? 'bg-stone-900 text-white shadow-sm scale-105'
-                    : 'bg-white text-stone-700 hover:bg-stone-100 border border-stone-200'
-                }`}
-              >
-                {m.name}
-              </button>
-            ))}
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {categories.map((cat) => {
+              const count = cat === '전체' 
+                ? OFFICIAL_MISSIONS.length 
+                : OFFICIAL_MISSIONS.filter((m) => m.category === cat).length;
+
+              const isSelected = selectedCategory === cat;
+
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-black whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 border-2 ${
+                    isSelected
+                      ? 'bg-amber-500 text-white border-amber-500 shadow-md scale-105'
+                      : 'bg-stone-50 text-stone-700 hover:bg-stone-100 border-stone-200 hover:border-amber-300'
+                  }`}
+                >
+                  <span>{cat}</span>
+                  <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-black ${
+                    isSelected ? 'bg-black/20 text-white' : 'bg-stone-200/80 text-stone-600'
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-
-          <input
-            type="text"
-            placeholder="목록에 없는 경우 직접 이름 입력 (예: 새신자 민우)"
-            value={customName}
-            onChange={(e) => setCustomName(e.target.value)}
-            className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-xl bg-white border border-stone-300 focus:outline-none focus:border-amber-500 font-medium"
-          />
-        </div>
-
-        {/* Category Tabs */}
-        <div className="flex gap-1.5 overflow-x-auto pb-2.5 mb-2 scrollbar-none">
-          {categories.map((cat) => {
-            const count = cat === '전체' 
-              ? OFFICIAL_MISSIONS.length 
-              : OFFICIAL_MISSIONS.filter((m) => m.category === cat).length;
-
-            return (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                  selectedCategory === cat
-                    ? 'bg-amber-500 text-white shadow-sm'
-                    : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-                }`}
-              >
-                <span>{cat}</span>
-                <span className={`text-[11px] px-1.5 py-0.2 rounded-full ${
-                  selectedCategory === cat ? 'bg-white/30 text-white' : 'bg-stone-200 text-stone-500'
-                }`}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
         </div>
 
         {/* Spacious, Highly Readable Missions List */}
