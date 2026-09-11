@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { District, Mission, SandoRecipe, CompletedSando } from './types';
 import { EventHeader } from './components/EventHeader';
 import { SandoKitchen } from './components/SandoKitchen';
-import { Top3Podium } from './components/Top3Podium';
 import { SandoShowcase } from './components/SandoShowcase';
 import { MissionSelectorModal } from './components/MissionSelectorModal';
 import { ScratchMissionModal } from './components/ScratchMissionModal';
 import { AdminPanel } from './components/AdminPanel';
-import { BroadcastView } from './components/BroadcastView';
 import { LandingPosterHero } from './components/LandingPosterHero';
 import { createInitialDistricts } from './utils/districtData';
 import { sounds } from './utils/soundEffects';
-import { Utensils, Trophy } from 'lucide-react';
 
 export function App() {
   const [districts, setDistricts] = useState<District[]>(() => {
@@ -33,7 +30,6 @@ export function App() {
   const [hasStarted, setHasStarted] = useState<boolean>(false);
 
   const [activeDistrictId, setActiveDistrictId] = useState<string>('1-1');
-  const [activeTab, setActiveTab] = useState<'kitchen' | 'ranking'>('kitchen');
 
   const [isMissionModalOpen, setIsMissionModalOpen] = useState(false);
   const [scratchModalData, setScratchModalData] = useState<{
@@ -41,8 +37,6 @@ export function App() {
     contributorName: string;
   } | null>(null);
 
-  const [isBroadcastMode, setIsBroadcastMode] = useState(false);
-  const [latestEventText, setLatestEventText] = useState('새신자부 열매산도 쟁탈전이 진행 중입니다.');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Save to localStorage
@@ -78,7 +72,6 @@ export function App() {
     );
 
     const eventDesc = `[${activeDistrict.name}] ${contributor ? `${contributor} 님이 ` : ''}'${missionTitle || '미션'}' 완료 (+${addedPoints}P)`;
-    setLatestEventText(eventDesc);
     showToast(eventDesc);
   };
 
@@ -111,7 +104,6 @@ export function App() {
     );
 
     const eventDesc = `[${activeDistrict.name}] ${activeDistrict.completedSandos.length + 1}번째 '${recipe.name}' 완성!`;
-    setLatestEventText(eventDesc);
     showToast(eventDesc);
   };
 
@@ -127,7 +119,7 @@ export function App() {
     return <LandingPosterHero onStartEvent={() => setHasStarted(true)} />;
   }
 
-  // 2. If started: Show full event application
+  // 2. If started: Show full event application (Ranking removed)
   return (
     <div className="min-h-screen bg-[#FAF6F0] p-3 sm:p-5 md:p-8 animate-popIn">
       {/* Clean Toast Notification */}
@@ -137,78 +129,27 @@ export function App() {
         </div>
       )}
 
-      {/* Broadcast Mode */}
-      {isBroadcastMode ? (
-        <BroadcastView
+      <div className="max-w-4xl mx-auto space-y-5">
+        {/* Header with 30 Districts Smart Selector & Back to Poster button */}
+        <EventHeader
           districts={districts}
-          onExit={() => setIsBroadcastMode(false)}
-          latestEvent={latestEventText}
+          activeDistrictId={activeDistrictId}
+          onSelectDistrict={(id) => setActiveDistrictId(id)}
+          onBackToPoster={() => setHasStarted(false)}
         />
-      ) : (
-        <div className="max-w-4xl mx-auto space-y-5">
-          {/* Header with 30 Districts Smart Selector & Back to Poster button */}
-          <EventHeader
-            districts={districts}
-            activeDistrictId={activeDistrictId}
-            onSelectDistrict={(id) => setActiveDistrictId(id)}
-            onBackToPoster={() => setHasStarted(false)}
+
+        {/* Our District Kitchen & Showcase (Focused Sando Assembly) */}
+        <div className="space-y-5">
+          <SandoKitchen
+            district={activeDistrict}
+            onSandoCompleted={handleSandoCompleted}
+            onOpenMissionModal={() => setIsMissionModalOpen(true)}
+            activeContributor={activeDistrict.members[0]?.name || '구역원'}
           />
 
-          {/* Simple Tab Switcher */}
-          <div className="flex bg-stone-200/80 p-1 rounded-2xl max-w-sm mx-auto shadow-inner">
-            <button
-              onClick={() => setActiveTab('kitchen')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
-                activeTab === 'kitchen'
-                  ? 'bg-white text-stone-900 shadow-sm'
-                  : 'text-stone-600 hover:text-stone-900'
-              }`}
-            >
-              <Utensils className="w-4 h-4 text-amber-600" />
-              <span>우리 구역 산도</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('ranking')}
-              className={`flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
-                activeTab === 'ranking'
-                  ? 'bg-white text-stone-900 shadow-sm'
-                  : 'text-stone-600 hover:text-stone-900'
-              }`}
-            >
-              <Trophy className="w-4 h-4 text-amber-600" />
-              <span>실시간 랭킹 (30개 구역)</span>
-            </button>
-          </div>
-
-          {/* Tab 1: Our District Kitchen & Showcase */}
-          {activeTab === 'kitchen' && (
-            <div className="space-y-5 animate-popIn">
-              <SandoKitchen
-                district={activeDistrict}
-                onSandoCompleted={handleSandoCompleted}
-                onOpenMissionModal={() => setIsMissionModalOpen(true)}
-                activeContributor={activeDistrict.members[0]?.name || '구역원'}
-              />
-
-              <SandoShowcase district={activeDistrict} />
-            </div>
-          )}
-
-          {/* Tab 2: Live Leaderboard for all 30 Groups */}
-          {activeTab === 'ranking' && (
-            <div className="animate-popIn">
-              <Top3Podium
-                districts={districts}
-                onSelectDistrict={(id) => {
-                  setActiveDistrictId(id);
-                  setActiveTab('kitchen');
-                }}
-                activeDistrictId={activeDistrictId}
-              />
-            </div>
-          )}
+          <SandoShowcase district={activeDistrict} />
         </div>
-      )}
+      </div>
 
       {/* Mission Selection Modal */}
       {isMissionModalOpen && (
@@ -250,8 +191,6 @@ export function App() {
         onSelectDistrict={(id) => setActiveDistrictId(id)}
         onAddDirectPoints={(id, pts) => handleAddPoints(id, pts, '관리자 포인트 가산')}
         onResetAllData={handleResetAllData}
-        isBroadcastMode={isBroadcastMode}
-        onToggleBroadcastMode={() => setIsBroadcastMode(!isBroadcastMode)}
       />
     </div>
   );

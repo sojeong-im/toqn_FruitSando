@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { District } from '../types';
-import { Settings, Sparkles, Volume2, Monitor, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { Settings, Sparkles, Volume2, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
 interface AdminPanelProps {
@@ -9,8 +9,6 @@ interface AdminPanelProps {
   onSelectDistrict: (id: string) => void;
   onAddDirectPoints: (districtId: string, points: number) => void;
   onResetAllData: () => void;
-  isBroadcastMode: boolean;
-  onToggleBroadcastMode: () => void;
 }
 
 export const AdminPanel: React.FC<AdminPanelProps> = ({
@@ -19,8 +17,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
   onSelectDistrict,
   onAddDirectPoints,
   onResetAllData,
-  isBroadcastMode,
-  onToggleBroadcastMode,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const activeDistrict = districts.find((d) => d.id === activeDistrictId) || districts[0];
@@ -87,44 +83,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
           </div>
 
-          {/* Mode & Sound Actions */}
-          <div className="mt-4 pt-3 border-t border-stone-800 space-y-2">
+          {/* Sound & Reset Actions */}
+          <div className="mt-4 pt-3 border-t border-stone-800 flex gap-2">
             <button
-              onClick={onToggleBroadcastMode}
-              className={`w-full py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all ${
-                isBroadcastMode
-                  ? 'bg-amber-400 text-stone-950 font-black'
-                  : 'bg-stone-800 hover:bg-stone-700 text-stone-300'
-              }`}
+              onClick={() => {
+                sounds.playSlash();
+                setTimeout(() => sounds.playFanfare(), 300);
+              }}
+              className="flex-1 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-semibold flex items-center justify-center gap-1.5"
             >
-              <Monitor className="w-4 h-4" />
-              <span>{isBroadcastMode ? '일반 모드로 복귀' : '본당 전광판 중계 모드'}</span>
+              <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+              <span>사운드 테스트</span>
             </button>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  sounds.playSlash();
-                  setTimeout(() => sounds.playFanfare(), 300);
-                }}
-                className="flex-1 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-[11px] font-semibold flex items-center justify-center gap-1"
-              >
-                <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                <span>사운드 테스트</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  if (window.confirm('모든 점수와 산도를 초기 상태로 리셋하시겠습니까?')) {
-                    onResetAllData();
-                  }
-                }}
-                className="py-1.5 px-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 text-[11px] font-bold border border-rose-500/40 flex items-center justify-center gap-1"
-              >
-                <RotateCcw className="w-3 h-3" />
-                <span>리셋</span>
-              </button>
-            </div>
+            <button
+              onClick={() => {
+                if (window.confirm('모든 점수와 산도를 초기 상태로 리셋하시겠습니까?')) {
+                  onResetAllData();
+                }
+              }}
+              className="py-2 px-3 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 text-xs font-bold border border-rose-500/40 flex items-center justify-center gap-1"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>리셋</span>
+            </button>
           </div>
         </div>
       )}
