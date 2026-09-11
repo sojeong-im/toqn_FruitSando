@@ -7,6 +7,7 @@ interface EventHeaderProps {
   activeDistrictId: string;
   onSelectDistrict: (id: string) => void;
   onBackToPoster: () => void;
+  onChangeDistrict?: () => void;
 }
 
 export const EventHeader: React.FC<EventHeaderProps> = ({
@@ -14,6 +15,7 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
   activeDistrictId,
   onSelectDistrict,
   onBackToPoster,
+  onChangeDistrict,
 }) => {
   const [showNoticeModal, setShowNoticeModal] = useState(false);
 
@@ -28,16 +30,27 @@ export const EventHeader: React.FC<EventHeaderProps> = ({
     <header className="mb-6 space-y-4">
       {/* Top Compact Navigation & Title Bar */}
       <div className="rounded-3xl bg-white p-4 sm:p-5 shadow-md border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
           {/* Back to Poster Button */}
           <button
             onClick={onBackToPoster}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors shrink-0 shadow-sm"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs transition-colors shrink-0 shadow-sm"
             title="포스터 메인 화면으로 돌아가기"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>포스터 보기</span>
+            <span>포스터</span>
           </button>
+
+          {/* Change Team/District Button */}
+          {onChangeDistrict && (
+            <button
+              onClick={onChangeDistrict}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-black text-xs transition-colors shrink-0 shadow-sm"
+              title="팀 & 구역 다시 선택하기"
+            >
+              <span>팀/구역 변경</span>
+            </button>
+          )}
 
           <div>
             <h1 className="text-lg sm:text-xl font-black text-stone-900 leading-tight">

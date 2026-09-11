@@ -7,6 +7,7 @@ import { MissionSelectorModal } from './components/MissionSelectorModal';
 import { ScratchMissionModal } from './components/ScratchMissionModal';
 import { AdminPage } from './components/AdminPage';
 import { LandingPosterHero } from './components/LandingPosterHero';
+import { TeamDistrictPicker } from './components/TeamDistrictPicker';
 import { createInitialDistricts } from './utils/districtData';
 import { sounds } from './utils/soundEffects';
 import { firebaseService } from './services/firebase';
@@ -30,8 +31,8 @@ export function App() {
 
   const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(false);
 
-  // Landing intro state: when entering, show ONLY the big poster!
-  const [hasStarted, setHasStarted] = useState<boolean>(false);
+  // Screen state flow: 'poster' -> 'picker' (팀/구역 선택) -> 'district' (미션 & 조리대)
+  const [screen, setScreen] = useState<'poster' | 'picker' | 'district'>('poster');
 
   // Separate Admin Page state (Accessible via URL #admin or discreet footer button)
   const [isAdminPage, setIsAdminPage] = useState<boolean>(() => {
@@ -213,12 +214,27 @@ export function App() {
     );
   }
 
-  // 2. Landing Poster Screen (Before starting event)
-  if (!hasStarted) {
-    return <LandingPosterHero onStartEvent={() => setHasStarted(true)} />;
+  // 2. Landing Poster Screen (Show poster first)
+  if (screen === 'poster') {
+    return <LandingPosterHero onStartEvent={() => setScreen('picker')} />;
   }
 
-  // 3. Regular Participant Event Application
+  // 3. Team & District Selection Screen (팀이랑 구역 선택하는 페이지)
+  if (screen === 'picker') {
+    return (
+      <TeamDistrictPicker
+        districts={districts}
+        onSelectDistrictAndStart={(districtId) => {
+          setActiveDistrictId(districtId);
+          setScreen('district');
+          setIsMissionModalOpen(true); // 그거 선택하면 미션 선택하는 창이 바로 나오게!
+        }}
+        onBackToPoster={() => setScreen('poster')}
+      />
+    );
+  }
+
+  // 4. Regular Participant Event Application (선택된 구역의 조리대 & 진열대)
   return (
     <div className="min-h-screen bg-[#FAF6F0] p-3 sm:p-5 md:p-8 animate-popIn flex flex-col justify-between">
       {/* Toast Notification */}
@@ -229,12 +245,13 @@ export function App() {
       )}
 
       <div className="max-w-4xl mx-auto space-y-5 w-full">
-        {/* Header with 30 Districts Smart Selector & Back to Poster button */}
+        {/* Header with 30 Districts Smart Selector, Back to Poster & Change Team/District */}
         <EventHeader
           districts={districts}
           activeDistrictId={activeDistrictId}
           onSelectDistrict={(id) => setActiveDistrictId(id)}
-          onBackToPoster={() => setHasStarted(false)}
+          onBackToPoster={() => setScreen('poster')}
+          onChangeDistrict={() => setScreen('picker')}
         />
 
         {/* Focused Sando Assembly & Showcase */}
