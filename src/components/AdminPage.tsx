@@ -28,6 +28,7 @@ interface AdminPageProps {
   onAddDirectPoints: (districtId: string, points: number) => void;
   onResetAllData: () => void;
   onBackToMain: () => void;
+  onPreviewParticipantScreen?: () => void;
 }
 
 export const AdminPage: React.FC<AdminPageProps> = ({
@@ -36,6 +37,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
   onAddDirectPoints,
   onResetAllData,
   onBackToMain,
+  onPreviewParticipantScreen,
 }) => {
   // Simple Security PIN gate
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -67,8 +69,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({
 
   const handlePinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Official organizer PIN: 00347
-    if (pinInput === '00347') {
+    // Official organizer PIN: 0314
+    if (pinInput === '0314') {
       setIsAuthenticated(true);
       sessionStorage.setItem('fruit_sando_admin_auth', 'true');
       setPinError(false);
@@ -237,6 +239,14 @@ export const AdminPage: React.FC<AdminPageProps> = ({
           </div>
 
           <div className="bg-white rounded-2xl p-4 border border-amber-200/80 shadow-sm flex flex-col items-center justify-center gap-1.5">
+            {onPreviewParticipantScreen && (
+              <button
+                onClick={onPreviewParticipantScreen}
+                className="w-full py-1.5 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-xs font-black flex items-center justify-center gap-1 transition-colors"
+              >
+                <span>참가자 화면 미리보기</span>
+              </button>
+            )}
             <button
               onClick={() => {
                 sounds.playSlash();

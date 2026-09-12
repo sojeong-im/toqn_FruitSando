@@ -7,6 +7,7 @@ import { MissionSelectorModal } from './components/MissionSelectorModal';
 import { AdminPage } from './components/AdminPage';
 import { LandingPosterHero } from './components/LandingPosterHero';
 import { TeamDistrictPicker } from './components/TeamDistrictPicker';
+import { EventClosedScreen } from './components/EventClosedScreen';
 import { createInitialDistricts } from './utils/districtData';
 import { sounds } from './utils/soundEffects';
 import { firebaseService } from './services/firebase';
@@ -30,8 +31,8 @@ export function App() {
 
   const [isFirebaseConnected, setIsFirebaseConnected] = useState<boolean>(false);
 
-  // Screen state flow: 'poster' -> 'picker' (팀/구역 선택) -> 'district' (미션 & 조리대)
-  const [screen, setScreen] = useState<'poster' | 'picker' | 'district'>('poster');
+  // Screen state flow: 'closed' (행사 마감 화면) | 'poster' | 'picker' | 'district'
+  const [screen, setScreen] = useState<'closed' | 'poster' | 'picker' | 'district'>('closed');
 
   // Separate Admin Page state (Accessible via URL #admin or discreet footer button)
   const [isAdminPage, setIsAdminPage] = useState<boolean>(() => {
@@ -204,17 +205,36 @@ export function App() {
         onBackToMain={() => {
           window.location.hash = '';
           setIsAdminPage(false);
+          setScreen('closed');
+        }}
+        onPreviewParticipantScreen={() => {
+          window.location.hash = '';
+          setIsAdminPage(false);
+          setScreen('district');
         }}
       />
     );
   }
 
-  // 2. Landing Poster Screen (Show poster first)
+  // 2. Event Closed Notice Screen (Default screen for all participants)
+  if (screen === 'closed') {
+    return (
+      <EventClosedScreen
+        districts={districts}
+        onAdminLoginSuccess={() => {
+          window.location.hash = '#admin';
+          setIsAdminPage(true);
+        }}
+      />
+    );
+  }
+
+  // 3. Landing Poster Screen (Admin preview)
   if (screen === 'poster') {
     return <LandingPosterHero onStartEvent={() => setScreen('picker')} />;
   }
 
-  // 3. Team & District Selection Screen (팀이랑 구역 선택하는 페이지)
+  // 4. Team & District Selection Screen (Admin preview)
   if (screen === 'picker') {
     return (
       <TeamDistrictPicker
@@ -222,14 +242,14 @@ export function App() {
         onSelectDistrictAndStart={(districtId) => {
           setActiveDistrictId(districtId);
           setScreen('district');
-          setIsMissionModalOpen(true); // 그거 선택하면 미션 선택하는 창이 바로 나오게!
+          setIsMissionModalOpen(true);
         }}
         onBackToPoster={() => setScreen('poster')}
       />
     );
   }
 
-  // 4. Regular Participant Event Application (선택된 구역의 조리대 & 진열대)
+  // 5. Regular Participant Event Application (Admin preview)
   return (
     <div className="min-h-screen bg-[#FAF6F0] p-3 sm:p-5 md:p-8 animate-popIn flex flex-col justify-between">
       {/* Toast Notification */}
