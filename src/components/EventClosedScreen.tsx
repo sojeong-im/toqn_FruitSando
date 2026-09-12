@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { District } from '../types';
-import { Trophy, Lock, Sparkles, CheckCircle2, AlertCircle, X, ArrowRight } from 'lucide-react';
+import { Lock, Sparkles, CheckCircle2, AlertCircle, X, ArrowRight } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
 interface EventClosedScreenProps {
@@ -15,20 +15,6 @@ export const EventClosedScreen: React.FC<EventClosedScreenProps> = ({
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
-
-  // Compute Top 3 Districts
-  const sortedDistricts = [...districts].sort((a, b) => {
-    if ((b.points || 0) !== (a.points || 0)) {
-      return (b.points || 0) - (a.points || 0);
-    }
-    const sandosA = a.completedSandos?.length || 0;
-    const sandosB = b.completedSandos?.length || 0;
-    return sandosB - sandosA;
-  });
-
-  const top1 = sortedDistricts[0];
-  const top2 = sortedDistricts[1];
-  const top3 = sortedDistricts[2];
 
   // Total completed sandos across all 30 districts
   const totalSandos = districts.reduce((acc, d) => acc + (d.completedSandos?.length || 0), 0);
@@ -91,66 +77,6 @@ export const EventClosedScreen: React.FC<EventClosedScreenProps> = ({
           </div>
         </div>
 
-        {/* 🏆 Top 3 Podium Final Honor Roll */}
-        <div className="bg-white p-5 rounded-3xl border border-amber-200 shadow-md space-y-3 max-w-lg mx-auto text-left">
-          <div className="flex items-center justify-between pb-2 border-b border-stone-100">
-            <div className="flex items-center gap-1.5">
-              <Trophy className="w-5 h-5 text-amber-500" />
-              <h2 className="text-sm sm:text-base font-black text-stone-900">최종 명예의 전당 (Top 3)</h2>
-            </div>
-            <span className="text-xs text-amber-700 font-bold">열매산도 최종 결과</span>
-          </div>
-
-          <div className="space-y-2">
-            {top1 && (
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-50 via-amber-100/60 to-yellow-50 border border-amber-300 flex items-center justify-between shadow-sm">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xl">🥇</span>
-                  <div>
-                    <span className="text-sm font-black text-stone-900">{top1.name}</span>
-                    <span className="text-[11px] text-stone-500 ml-1.5 font-bold">({top1.team}팀)</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-sm font-black text-amber-900">{top1.points}P</span>
-                  <span className="text-[11px] text-stone-500 ml-1.5 font-semibold">산도 {top1.completedSandos.length}개</span>
-                </div>
-              </div>
-            )}
-
-            {top2 && (
-              <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-lg">🥈</span>
-                  <div>
-                    <span className="text-xs sm:text-sm font-bold text-stone-800">{top2.name}</span>
-                    <span className="text-[10px] text-stone-400 ml-1.5 font-medium">({top2.team}팀)</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs sm:text-sm font-bold text-stone-800">{top2.points}P</span>
-                  <span className="text-[10px] text-stone-400 ml-1.5 font-medium">산도 {top2.completedSandos.length}개</span>
-                </div>
-              </div>
-            )}
-
-            {top3 && (
-              <div className="p-2.5 rounded-xl bg-stone-50 border border-stone-200 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-lg">🥉</span>
-                  <div>
-                    <span className="text-xs sm:text-sm font-bold text-stone-800">{top3.name}</span>
-                    <span className="text-[10px] text-stone-400 ml-1.5 font-medium">({top3.team}팀)</span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-xs sm:text-sm font-bold text-stone-800">{top3.points}P</span>
-                  <span className="text-[10px] text-stone-400 ml-1.5 font-medium">산도 {top3.completedSandos.length}개</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
 
         {/* 🔒 Administrator Access Button */}
         <div className="pt-2">
